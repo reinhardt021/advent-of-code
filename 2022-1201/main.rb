@@ -25,27 +25,25 @@ class Main
     elf_with_max = nil
 
     elf = 1
-    curr_total = 0
+    elf_total = 0
     index = 0
-    puts @calories.count
     while index < @calories.count
       item = @calories[index]
-      puts "index[" + index.to_s + "]=" + item.to_s
+      puts "elf[" + elf.to_s + "] food[" + index.to_s + "]=" + item.to_s
       if item == nil 
-        puts "new elf"
-         #change elf count
         elf += 1
-        #curr_total = 0
+        elf_total = 0 
          #unless still at one
         index += 1
         next
       end
 
-      #curr_total += item
+      elf_total += item
 
-      #if curr_total > max_calories
-        #elf_with_max = elf
-      #end
+      if elf_total > max_calories
+        elf_with_max = elf
+        max_calories = elf_total
+      end
 
       index += 1
     end
