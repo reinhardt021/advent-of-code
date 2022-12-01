@@ -10,7 +10,7 @@ class Main
     true if Float(input) rescue false
   end
 
-  def run
+  def run(elf_count = 1)
     #first_elf = nil
     #last_elf = nil
     elves = {}
@@ -22,67 +22,93 @@ class Main
     #     calories: 123456,
     #   }
     # }
-    positions = {}
-    # positions = {
-    #   1: 12,
-    #   2: 33,
-    #   3: 28,
+    rank = {
+      first: nil,
+      second: nil,
+      third: nil
+    }
+    # rank = {
+    #   first: 12,
+    #   second: 33,
+    #   third: 28,
     # }
-    gold_elf = nil
-    gold_calories = 0
 
-    silver_elf = nil
-    silver_calories = 0
+    #gold_elf = nil
+    #gold_calories = 0
 
-    bronze_elf = nil
-    bronze_calories = 0
+    #silver_elf = nil
+    #silver_calories = 0
+
+    #bronze_elf = nil
+    #bronze_calories = 0
 
     elf = 1
     elf_total = 0
     index = 0
     while index < @calories.count
       item = @calories[index]
+      index += 1
       #puts "elf[" + elf.to_s + "] food[" + index.to_s + "]=" + item.to_s
       #puts "isnumber? " + is_number?(item).to_s
       if is_number?(item) == false
 
-        if elf_total > gold_calories
-          # bump the others down
-          bronze_elf = silver_elf
-          bronze_calories = silver_calories
-          silver_elf = gold_elf
-          silver_calories = gold_calories
-          gold_elf = elf
-          gold_calories = elf_total
-        elsif elf_total > silver_calories
-          # bump the others down
-          bronze_elf = silver_elf
-          bronze_calories = silver_calories
-          silver_elf = elf
-          silver_calories = elf_total
-        elsif elf_total > bronze_calories
-          bronze_elf = elf
-          bronze_calories = elf_total
-        end
-        # might be able to fix with linked lists sorting
-
+        # reset after hitting a null
         elf += 1
         elf_total = 0 
-         #unless still at one
-        index += 1
+        #unless still at one
         next
       end
 
       elf_total += item.to_i
 
-      index += 1
+      elf_key = elf.to_s.to_sym
+      elves[elf_key] = elf_total
+      
+      # TODO: missing the final line count
+      elf_id = rank[:first] ? rank[:first].to_s.to_sym : nil
+      calories = elf_id ? elves[elf_id] : 0
+      if elf_total > calories
+        # bump the others down
+        rank[:third] = rank[:second] # 2nd >> 3rd
+        rank[:second] = rank[:first] # 1st >> 2nd
+        rank[:first] = elf # 1st = new elf
+        next
+      end
+
+      elf_id = rank[:second] ? rank[:second].to_s.to_sym : nil
+      calories = elf_id ? elves[elf_id] : 0
+      if elf_total > calories
+        # bump the others down
+        rank[:third] = rank[:second] # 2nd >> 3rd
+        rank[:second] = elf # 2nd = new elf
+        next
+      end
+
+      elf_id = rank[:second] ? rank[:second].to_s.to_sym : nil
+      calories = elf_id ? elves[elf_id] : 0
+      if elf_total > calories
+        rank[:third] = elf # 3rd = new elf
+      end
+
     end
     
+    # return values
     #gold_calories
-    puts "elf[" + gold_elf.to_s + "] calories=" + gold_calories.to_s
-    puts "elf[" + silver_elf.to_s + "] calories=" + silver_calories.to_s
-    puts "elf[" + bronze_elf.to_s + "] calories=" + bronze_calories.to_s
-    top3_total = gold_calories + silver_calories + bronze_calories
+    elf1 = rank[:first].to_s
+    elf2 = rank[:second].to_s
+    elf3 = rank[:third].to_s
+    calories1 = elves[elf1.to_sym]
+    calories2 = elves[elf2.to_sym]
+    calories3 = elves[elf3.to_sym]
+    puts "elf[" + elf1 + "] calories=" + calories1.to_s
+    puts "elf[" + elf2 + "] calories=" + calories2.to_s
+    puts "elf[" + elf3 + "] calories=" + calories3.to_s
+    #top3_total = gold_calories + silver_calories + bronze_calories
+    if elf_count == 1
+      calories1
+    elsif elf_count == 3
+      top3_total = calories1 + calories2 + calories3
+    end
   end
 end
 
