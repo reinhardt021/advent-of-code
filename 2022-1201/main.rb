@@ -20,6 +20,10 @@ class Main
     @calories = calories
   end
 
+  def is_number?(input)
+    true if Float(input) rescue false
+  end
+
   def run
     max_calories = 0
     elf_with_max = nil
@@ -30,7 +34,8 @@ class Main
     while index < @calories.count
       item = @calories[index]
       puts "elf[" + elf.to_s + "] food[" + index.to_s + "]=" + item.to_s
-      if item == nil 
+      puts "isnumber? " + is_number?(item).to_s
+      if is_number?(item) == false
         elf += 1
         elf_total = 0 
          #unless still at one
@@ -38,7 +43,7 @@ class Main
         next
       end
 
-      elf_total += item
+      elf_total += item.to_i
 
       if elf_total > max_calories
         elf_with_max = elf
@@ -52,7 +57,11 @@ class Main
   end
 end
 
-main = Main.new(input)
+file = File.open("input.txt")
+file_data = file.read.split("\n")
+puts file_data.class.name
+
+main = Main.new(file_data)
 result = main.run
 
 puts "result = ", result
