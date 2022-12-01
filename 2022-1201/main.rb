@@ -33,17 +33,9 @@ class Main
     #   third: 28,
     # }
 
-    #gold_elf = nil
-    #gold_calories = 0
-
-    #silver_elf = nil
-    #silver_calories = 0
-
-    #bronze_elf = nil
-    #bronze_calories = 0
 
     elf = 1
-    elf_total = 0
+    cal_count = 0
     index = 0
     while index < @calories.count
       item = @calories[index]
@@ -54,20 +46,20 @@ class Main
 
         # reset after hitting a null
         elf += 1
-        elf_total = 0 
+        cal_count = 0 
         #unless still at one
         next
       end
 
-      elf_total += item.to_i
+      cal_count += item.to_i
 
-      elf_key = elf.to_s.to_sym
-      elves[elf_key] = elf_total
+      elf_id = elf.to_s.to_sym
+      elves[elf_id] = cal_count
       
       # TODO: missing the final line count
       elf_id = rank[:first] ? rank[:first].to_s.to_sym : nil
       calories = elf_id ? elves[elf_id] : 0
-      if elf_total > calories
+      if cal_count > calories
         # bump the others down
         rank[:third] = rank[:second] # 2nd >> 3rd
         rank[:second] = rank[:first] # 1st >> 2nd
@@ -77,7 +69,7 @@ class Main
 
       elf_id = rank[:second] ? rank[:second].to_s.to_sym : nil
       calories = elf_id ? elves[elf_id] : 0
-      if elf_total > calories
+      if cal_count > calories
         # bump the others down
         rank[:third] = rank[:second] # 2nd >> 3rd
         rank[:second] = elf # 2nd = new elf
@@ -86,7 +78,7 @@ class Main
 
       elf_id = rank[:second] ? rank[:second].to_s.to_sym : nil
       calories = elf_id ? elves[elf_id] : 0
-      if elf_total > calories
+      if cal_count > calories
         rank[:third] = elf # 3rd = new elf
       end
 
@@ -119,7 +111,11 @@ end
 main = Main.new("input-00.txt")
 result = main.run
 puts "result = "+ result.to_s # should be 24,000
+result = main.run(3)
+puts "result = "+ result.to_s # should be 45,000
 
 main = Main.new("input.txt")
 result = main.run
 puts "result = " + result.to_s # should be 72,478
+result = main.run(3)
+puts "result = "+ result.to_s # should be ?
