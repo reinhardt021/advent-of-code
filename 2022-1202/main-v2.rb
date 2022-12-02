@@ -89,7 +89,7 @@ main = Main.new("input2a.txt")
 result = main.run
 puts "result: ", result
 
-#main = Main.new("input2b.txt")
-#result = main.run
-#puts "result: ", result
+main = Main.new("input2b.txt")
+result = main.run
+puts "result: ", result
 
