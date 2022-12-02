@@ -46,16 +46,17 @@ class Main
       me = MINE[me_enc.to_sym]
 
       my_points = POINTS[me.to_sym]
-      puts "choices: them[#{them}] me[#{me}+#{my_points}]"
-      #puts "mypoints = " + my_points.to_s
 
-      # TODO: check who wins
       outcome = get_outcome(them, me)
-      puts "outcome: #{outcome}"
-      # then add points
+      outcome_points = OUTCOME_POINTS[outcome.to_sym]
+      puts "> them[#{them}] me[#{me}+#{my_points}] >> #{outcome}[#{outcome_points}]"
+      my_points += outcome_points
 
       my_total += my_points
     end
+
+    #puts "total = #{my_total.to_s}"
+    my_total
   end
 
   def get_outcome(their_choice, my_choice)
@@ -80,3 +81,8 @@ end
 main = Main.new("input2a.txt")
 result = main.run
 puts "result: ", result
+
+main = Main.new("input2b.txt")
+result = main.run
+puts "result: ", result
+
