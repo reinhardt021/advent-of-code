@@ -12,6 +12,16 @@ class Main
     PAPER.to_sym => 2,
     SCISSORS.to_sym => 3,
   }
+  WIN_BY = { #them >> you
+    ROCK.to_sym => PAPER,
+    PAPER.to_sym => SCISSORS,
+    SCISSORS.to_sym => ROCK,
+  }
+  LOSE_BY = { #them >> you
+    ROCK.to_sym => SCISSORS,
+    SCISSORS.to_sym => PAPER,
+    PAPER.to_sym => ROCK,
+  }
   WIN = "WIN"
   LOSE = "LOSE"
   DRAW = "DRAW"
@@ -37,52 +47,49 @@ class Main
     while index < @data.count
       round = @data[index]
       index +=1
-      my_points = 0
+      round_points = 0
 
-      choices = round.split(" ")
-      them_enc = choices[0]
-      me_enc = choices[1]
+      codes = round.split(" ")
+      them_enc = codes[0]
+      outcome_enc = codes[1]
       them = THEM[them_enc.to_sym]
-      me = MINE[me_enc.to_sym]
-
-      my_points = POINTS[me.to_sym]
-
-      outcome = get_outcome(them, me)
+      outcome = OUTCOME[outcome_enc.to_sym]
       outcome_points = OUTCOME_POINTS[outcome.to_sym]
-      puts "> them[#{them}] me[#{me}+#{my_points}] >> #{outcome}[#{outcome_points}]"
-      my_points += outcome_points
+      round_points += outcome_points
+      #puts "> them[#{them}] me[?+?] >> #{outcome}[#{outcome_points}]"
 
-      my_total += my_points
+      me = get_my_choice(them, outcome)
+      my_points = POINTS[me.to_sym]
+      round_points += my_points
+
+      puts "> them[#{them}] me[#{me}+#{my_points}] >> #{outcome}[#{outcome_points}]"
+
+      my_total += round_points
     end
 
     #puts "total = #{my_total.to_s}"
     my_total
   end
 
-  def get_outcome(their_choice, my_choice)
-    if (their_choice == my_choice)
-      return DRAW
+  def get_my_choice(their_choice, outcome)
+    if (outcome == DRAW)
+      return their_choice
     end
 
-    # rock < paper
-    # paper < scissors
-    # scissors < rock
-    rock_to_paper = (their_choice == ROCK && my_choice == PAPER)
-    paper_to_scissors = (their_choice == PAPER && my_choice == SCISSORS)
-    scissors_to_rock = (their_choice == SCISSORS && my_choice == ROCK)
-    if (rock_to_paper || paper_to_scissors || scissors_to_rock) 
-      return WIN
+    if outcome == WIN
+      return WIN_BY[their_choice.to_sym]
     else
-      return LOSE
+      return LOSE_BY[their_choice.to_sym]
     end
   end
+
 end
 
 main = Main.new("input2a.txt")
 result = main.run
 puts "result: ", result
 
-main = Main.new("input2b.txt")
-result = main.run
-puts "result: ", result
+#main = Main.new("input2b.txt")
+#result = main.run
+#puts "result: ", result
 
