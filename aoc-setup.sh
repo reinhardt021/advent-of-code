@@ -6,7 +6,9 @@
     # // create the folder if not already created
         # // create input_DDa.txt - ex: input_1a.txt
         # // create main_DDa.rb - ex: main_1a.rb
-        # // create README_DD.md - ex: README_1.md
+         #// create README_DD.md - ex: README_1.md
 
 # // START: create just a simple method to create the folder for the day
+
+mkdir -vp ./2022-1204; # make directory, be verbose, and create intermediary directories if not there
 
