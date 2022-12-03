@@ -21,7 +21,6 @@ class Main
   end
 
   def run
-    result = nil
     priorities = []
     index = 0
     while index < @data.count
