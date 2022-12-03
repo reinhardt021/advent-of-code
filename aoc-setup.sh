@@ -10,12 +10,25 @@
 
 # // START: create just a simple method to create the folder for the day
 
+pad_number () {
+    number=$1 # note: how to grab func params
+    digits="${number}"
+
+    if [ $number -lt 10 ] # note: spacing `[ cond ]` very important
+    then
+        digits="0${number}"
+    fi
+
+    echo $digits # note: how to return string
+}
+
 # TODO: create year variable
 YEAR="2022"
 #mkdir -vp ./2022-1204; # make directory, be verbose, and create intermediary directories if not there
 for index in {1..25}
 do
-    echo "./${YEAR}-12" # TODO: concat index to string
+    DAY=$(pad_number $index) #note: how to pass var and grab return value
+    echo "./${YEAR}-12${DAY}" # TODO: concat index to string
 
     # TODO: check if folder not created before creating
 done
