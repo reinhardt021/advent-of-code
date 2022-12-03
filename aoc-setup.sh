@@ -22,14 +22,19 @@ pad_number () {
     echo $digits # note: how to return string
 }
 
-# TODO: create year variable
 YEAR="2022"
-#mkdir -vp ./2022-1204; # make directory, be verbose, and create intermediary directories if not there
 for index in {1..25}
 do
     DAY=$(pad_number $index) #note: how to pass var and grab return value
-    echo "./${YEAR}-12${DAY}" # TODO: concat index to string
-
+    NEW_DIR="./${YEAR}-12${DAY}" 
     # TODO: check if folder not created before creating
+    if [[ -d $NEW_DIR ]]
+    then
+        echo "directory ${NEW_DIR} exists"
+    else
+        #mkdir -vp ./2022-1204; # make directory, be verbose, and create intermediary directories if not there
+        echo "directory ${NEW_DIR} created"
+    fi
+
 done
 
