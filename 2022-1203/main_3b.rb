@@ -21,15 +21,21 @@ class Main
   end
 
   def run
+    group = []
     priorities = []
     index = 0
     while index < @data.count
       item = @data[index]
       index += 1
 
-      intersect = get_intersect(item)
+      group << item
 
-      priorities << @priority_map[intersect.to_sym]
+      if group.length == 3 
+        puts "group: " + group.to_s
+        #intersect = get_intersect(group)
+        #priorities << @priority_map[intersect.to_sym]
+        group = [] # reset group before going to next group
+      end
     end
     #puts "priorities" + priorities.to_s
 
@@ -41,7 +47,7 @@ main = Main.new("input_3a.txt")
 results = main.run
 puts "results: " + results.to_s
 
-main = Main.new("input_3b.txt")
-results = main.run
-puts "results: " + results.to_s
+#main = Main.new("input_3b.txt")
+#results = main.run
+#puts "results: " + results.to_s
 
