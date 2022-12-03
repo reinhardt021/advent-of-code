@@ -46,7 +46,7 @@ main = Main.new("input_3a.txt")
 results = main.run
 puts "results: " + results.to_s
 
-#main = Main.new("input_3b.txt")
-#results = main.run
-#puts "results: " + results.to_s
+main = Main.new("input_3b.txt")
+results = main.run
+puts "results: " + results.to_s
 
