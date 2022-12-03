@@ -23,16 +23,18 @@ pad_number () {
 }
 
 YEAR="2022"
+#for index in {1..5}
 for index in {1..25}
 do
     DAY=$(pad_number $index) #note: how to pass var and grab return value
     NEW_DIR="./${YEAR}-12${DAY}" 
-    # TODO: check if folder not created before creating
     if [[ -d $NEW_DIR ]]
     then
         echo "directory ${NEW_DIR} exists"
     else
         #mkdir -vp ./2022-1204; # make directory, be verbose, and create intermediary directories if not there
+        mkdir -vp $NEW_DIR
+
         echo "directory ${NEW_DIR} created"
     fi
 
