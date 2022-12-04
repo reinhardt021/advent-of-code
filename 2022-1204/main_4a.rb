@@ -5,6 +5,7 @@ class Main
   end
 
   def run 
+    fully_contained_count = 0
     index = 0
     while index < @data.length
       item = @data[index]
@@ -14,11 +15,12 @@ class Main
 
       result = is_range_within_another(parts[0], parts[1])
       puts "    is_range_within_another= #{result}"
+      if result
+        fully_contained_count += 1
+      end
     end
 
-    # In how many assignment pairs 
-    # does one range fully contain the other?
-
+    return fully_contained_count
   end
 
   def is_range_within_another(range1, range2)
