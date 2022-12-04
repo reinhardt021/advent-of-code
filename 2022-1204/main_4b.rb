@@ -13,8 +13,8 @@ class Main
     
       parts = item.split(',')
 
-      result = is_range_within_another(parts[0], parts[1])
-      #puts "    is_range_within_another= #{result}"
+      result = do_ranges_overlap(parts[0], parts[1])
+      puts "    do_ranges_overlap= #{result}"
       if result
         fully_contained_count += 1
       end
@@ -23,34 +23,42 @@ class Main
     return fully_contained_count
   end
 
-  def is_range_within_another(range1, range2)
+  def do_ranges_overlap(range1, range2)
     min_max1 = range1.split('-').map { |x| x.to_i }
     min_max2 = range2.split('-').map { |x| x.to_i }
-    magnitude1 = min_max1[1] - min_max1[0]
-    magnitude2 = min_max2[1] - min_max2[0]
+    #magnitude1 = min_max1[1] - min_max1[0]
+    #magnitude2 = min_max2[1] - min_max2[0]
 
-    #puts "#{min_max1.to_s}[#{magnitude1}] && #{min_max2.to_s}[#{magnitude2}]"
-    if magnitude1 == magnitude2 
-      return min_max1[0] == min_max2[0]
-    end
+    nums1 = (min_max1[0]..min_max1[1]).map { |x| x }
+    nums2 = (min_max2[0]..min_max2[1]).map { |x| x }
+    intersect = nums1 & nums2
+    puts "#{nums1.to_s} && #{nums2.to_s} >> #{intersect.to_s} len=#{intersect.length}"
+    return intersect.length > 0
+    #if magnitude1 == magnitude2 
+      #return min_max1[0] == min_max2[0]
+    #end
 
-    if magnitude1 < magnitude2
-      smaller_range = min_max1
-      larger_range = min_max2
-    else
-      smaller_range = min_max2
-      larger_range = min_max1
-    end
+    #if magnitude1 < magnitude2
+      #smaller_range = min_max1
+      #larger_range = min_max2
+    #else
+      #smaller_range = min_max2
+      #larger_range = min_max1
+    #end
 
-    smaller_within_larger_min = larger_range[0] <= smaller_range[0]
-    smaller_within_larger_max = smaller_range[1] <= larger_range[1]
-    return smaller_within_larger_min && smaller_within_larger_max
+    #smaller_within_larger_min = larger_range[0] <= smaller_range[0]
+    #smaller_within_larger_max = smaller_range[1] <= larger_range[1]
+    #return smaller_within_larger_min && smaller_within_larger_max
   end
 
 end
 
 def assertEquals(expected, actual)
-  puts expected == actual ? "PASS" : "FAIL"
+  if expected == actual
+    puts "PASS: exp[#{expected}] == act[#{actual}]"
+  else
+    puts "FAIL: exp[#{expected}] != act[#{actual}]"
+  end
 end
 
 main = Main.new('input_4a.txt')
