@@ -56,9 +56,9 @@ end
 main = Main.new('input_4a.txt')
 results = main.run
 puts "results: " + results.to_s
-assertEquals(2, results)
+assertEquals(4, results)
 
-main = Main.new('input_4b.txt')
-results = main.run
-puts "results: " + results.to_s
-assertEquals(582, results)
+#main = Main.new('input_4b.txt')
+#results = main.run
+#puts "results: " + results.to_s
+#assertEquals(582, results)
