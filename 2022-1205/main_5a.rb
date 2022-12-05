@@ -15,29 +15,21 @@ class Main
       stacks[id.to_s.to_sym] = []
     end
     rows.reverse.each do |row|
-      #level = row.split(' ') #// doesn't work
-      level = row.split('') #// works better
-      #puts "row: " + level.to_s
-      # TODO store each row into the stacks
-
 
       stack_index = 0
       level_index = stack_index + 1
       while stack_index < stack_count
-        crate = row[level_index]
-        #puts "crate: " + crate
-        #store crate into array
-        if crate != " "
-          stack_key = stack_ids[stack_index].to_s
-          #puts "stack_key: " + stack_key
 
+        crate = row[level_index]
+        if crate != " "
+          stack_key = stack_ids[stack_index]
           stacks[stack_key.to_sym] << crate
         end
         
-        # once i have the id of each stack then I can go 
         stack_index += 1
         level_index += 4
       end
+
     end
 
     return stacks
@@ -70,17 +62,16 @@ class Main
       end
       if has_nums && !store_stacks && !store_steps
         message = 'store IDs'
-        @stack_ids = nums_found.map { |x| x.to_i }
+        @stack_ids = nums_found
         @stacks = parse_stacks(@stack_ids, rows)
-        #@stacks << item # TODO: parse into HASH of ARRAYS
       end
       if store_steps
         message = "store steps"
         @steps << item
       end
-      #puts "- #{item} >> #{message}"
-      #puts ">> #{item} >> nums?#{has_nums.to_s} - empty?#{empty_line}"
+
     end
+
     puts "rows:", rows
     puts "@stack_ids:", @stack_ids.to_s
     puts "@stacks:", @stacks
