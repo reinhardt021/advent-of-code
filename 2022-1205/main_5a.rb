@@ -30,7 +30,8 @@ class Main
       item = raw_data[index]
       index += 1
 
-      has_nums = string_contains_nums(item)
+      nums_found = get_string_nums(item)
+      has_nums = nums_found.length > 0
       if has_nums
         store_stacks = false
         store_steps = is_step(item)
@@ -43,6 +44,7 @@ class Main
       end
       if has_nums && !store_stacks && !store_steps
         message = 'store IDs'
+        @stack_ids = nums_found
       end
       if store_steps
         message = "store steps"
@@ -52,12 +54,12 @@ class Main
       #puts ">> #{item} >> nums?#{has_nums.to_s} - empty?#{empty_line}"
     end
     puts "@stacks:", @stacks
+    puts "@stack_ids:", @stack_ids.to_s
     puts "@steps:", @steps
   end
 
-  def string_contains_nums(string)
+  def get_string_nums(string)
     nums_found = string.scan(/\d/)
-    nums_found.length > 0
   end
 
   def is_step(string)
