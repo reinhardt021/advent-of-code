@@ -1,28 +1,28 @@
 class Main
+  def get_string_nums(string)
+    nums_found = string.scan(/\d/)
+  end
 
-  def initialize(filename)
-    file = File.open(filename)
-    raw_data = file.read.split("\n")
-    parse_drawing(raw_data)
-    # TODO: parse the data line by line first
-    # then store into diff variables
+  def is_step(string)
+    string.include? 'move'
+  end
 
-    # hard code the parsing?
-    # get total row
-    # each crate takes 3 chars [x]
-    rows = []
-    # store the rows first 
-    # until you reach numbers
-    # then get the numbers in an Array
-    # remove the empty spaces
-    # then can use the largest number to sort through the rows
+  def parse_stacks(stack_ids, rows)
+    stacks = {}
+
+    stack_ids.each do |id|
+      stacks[id.to_sym] = []
+    end
+
+    return stacks
   end
 
   def parse_drawing(raw_data)
     @stack_ids = []
-    @stacks = []
+    @stacks = {} 
     @steps = []
 
+    rows = []
     store_stacks = true
     store_steps = false
     index = 0
@@ -40,11 +40,13 @@ class Main
       message = ''
       if store_stacks
         message = "store stacks"
-        @stacks << item # TODO: parse into HASH of ARRAYS
+        rows << item
       end
       if has_nums && !store_stacks && !store_steps
         message = 'store IDs'
         @stack_ids = nums_found
+        @stacks = parse_stacks(@stack_ids, rows)
+        #@stacks << item # TODO: parse into HASH of ARRAYS
       end
       if store_steps
         message = "store steps"
@@ -53,17 +55,28 @@ class Main
       puts "- #{item} >> #{message}"
       #puts ">> #{item} >> nums?#{has_nums.to_s} - empty?#{empty_line}"
     end
-    puts "@stacks:", @stacks
+    puts "rows:", rows
     puts "@stack_ids:", @stack_ids.to_s
+    puts "@stacks:", @stacks
     puts "@steps:", @steps
   end
 
-  def get_string_nums(string)
-    nums_found = string.scan(/\d/)
-  end
+  def initialize(filename)
+    file = File.open(filename)
+    raw_data = file.read.split("\n")
+    parse_drawing(raw_data)
+    # TODO: parse the data line by line first
+    # then store into diff variables
 
-  def is_step(string)
-    string.include? 'move'
+    # hard code the parsing?
+    # get total row
+    # each crate takes 3 chars [x]
+    rows = []
+    # store the rows first 
+    # until you reach numbers
+    # then get the numbers in an Array
+    # remove the empty spaces
+    # then can use the largest number to sort through the rows
   end
   
   def run
