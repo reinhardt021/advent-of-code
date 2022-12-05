@@ -85,8 +85,25 @@ class Main
   end
   
   def run
-    
+    @steps.each do |step|
+      puts "step: " + step
+      
+    end
+
+    return get_top_crates(@stack_ids, @stacks)
   end
+
+  def get_top_crates(stack_ids, stacks)
+    top_crates = []
+
+    stack_ids.each do |id|
+      stack = stacks[id.to_sym]
+      top_crates << stack.last
+    end
+
+    top_crates.join
+  end
+
 end
 
 def assertEquals(expected, actual)
