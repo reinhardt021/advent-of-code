@@ -86,8 +86,16 @@ class Main
   
   def run
     @steps.each do |step|
-      puts "step: " + step
-      
+      instruction = step.split(' ')
+      crate_count = instruction[1].to_i
+      from_stack = instruction[3]
+      to_stack = instruction[5]
+      puts "move[#{crate_count.to_s}] from[#{from_stack}] to[#{to_stack}]"
+
+      crate_count.times do
+        crate = @stacks[from_stack.to_sym].pop
+        @stacks[to_stack.to_sym].push(crate)
+      end
     end
 
     return get_top_crates(@stack_ids, @stacks)
