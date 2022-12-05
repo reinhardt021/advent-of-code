@@ -92,8 +92,11 @@ class Main
       to_stack = instruction[5]
       puts "move[#{crate_count.to_s}] from[#{from_stack}] to[#{to_stack}]"
 
-      crate_count.times do
-        crate = @stacks[from_stack.to_sym].pop
+      crates = @stacks[from_stack.to_sym].pop(crate_count)
+      #@stacks[to_stack.to_sym].push(crates)
+
+      crates.each do |crate|
+        #crate = @stacks[from_stack.to_sym].pop
         @stacks[to_stack.to_sym].push(crate)
       end
     end
@@ -122,12 +125,12 @@ def assertEquals(expected, actual)
   end
 end
 
-#main = Main.new('input_5a.txt')
-#results = main.run
-#puts "results: " + results.to_s
-#assertEquals('CMZ', results)
+main = Main.new('input_5a.txt')
+results = main.run
+puts "results: " + results.to_s
+assertEquals('MCD', results)
 
 main = Main.new('input_5b.txt')
 results = main.run
 puts "results: " + results.to_s
-#assertEquals('CMZ', 'QNNTGTPFN')
+#assertEquals('QNNTGTPFN', results)

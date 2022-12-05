@@ -110,13 +110,23 @@ The first half of this puzzle is complete! It provides one gold star: *
 
 --- Part Two ---
 
-As you watch the crane operator expertly rearrange the crates, you notice the process isn't following your prediction.
+As you watch the crane operator expertly rearrange the crates, 
+you notice the process isn't following your prediction.
 
-Some mud was covering the writing on the side of the crane, and you quickly wipe it away. The crane isn't a CrateMover 9000 - it's a CrateMover 9001.
+Some mud was covering the writing on the side of the crane, 
+and you quickly wipe it away. 
+The crane isn't a CrateMover 9000 - it's a CrateMover 9001.
 
-The CrateMover 9001 is notable for many new and exciting features: air conditioning, leather seats, an extra cup holder, and the ability to pick up and move multiple crates at once.
+The CrateMover 9001 
+is notable for many new and exciting features: 
+air conditioning, 
+leather seats, 
+an extra cup holder, 
+and the ability to pick up 
+and move multiple crates at once.
 
-Again considering the example above, the crates begin in the same configuration:
+Again considering the example above, 
+the crates begin in the same configuration:
 
     [D]    
 [N] [C]    
@@ -151,4 +161,10 @@ Finally, a single crate is still moved from stack 1 to stack 2, but now it's cra
  1   2   3
 In this example, the CrateMover 9001 has put the crates in a totally different order: MCD.
 
-Before the rearrangement process finishes, update your simulation so that the Elves know where they should stand to be ready to unload the final supplies. After the rearrangement procedure completes, what crate ends up on top of each stack?
+Before the rearrangement process finishes, 
+update your simulation 
+so that the Elves know 
+where they should stand to be ready to unload the final supplies.
+
+After the rearrangement procedure completes, 
+what crate ends up on top of each stack?
