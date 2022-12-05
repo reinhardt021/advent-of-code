@@ -122,12 +122,12 @@ def assertEquals(expected, actual)
   end
 end
 
-main = Main.new('input_5a.txt')
-results = main.run
-puts "results: " + results.to_s
-assertEquals('CMZ', results)
-
-#main = Main.new('input_5b.txt')
+#main = Main.new('input_5a.txt')
 #results = main.run
 #puts "results: " + results.to_s
+#assertEquals('CMZ', results)
+
+main = Main.new('input_5b.txt')
+results = main.run
+puts "results: " + results.to_s
 #assertEquals('CMZ', results)
