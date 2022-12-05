@@ -19,6 +19,7 @@ class Main
   end
 
   def parse_drawing(raw_data)
+    @stack_ids = []
     @stacks = []
     @steps = []
 
@@ -32,24 +33,35 @@ class Main
       has_nums = string_contains_nums(item)
       if has_nums
         store_stacks = false
-        store_steps = true
+        store_steps = is_step(item)
       end
 
-      message = 'store stackz'
+      message = ''
       if store_stacks
         message = "store stacks"
+        @stacks << item # TODO: parse into HASH of ARRAYS
+      end
+      if has_nums && !store_stacks && !store_steps
+        message = 'store IDs'
       end
       if store_steps
         message = "store steps"
+        @steps << item
       end
       puts "- #{item} >> #{message}"
       #puts ">> #{item} >> nums?#{has_nums.to_s} - empty?#{empty_line}"
     end
+    puts "@stacks:", @stacks
+    puts "@steps:", @steps
   end
 
   def string_contains_nums(string)
     nums_found = string.scan(/\d/)
     nums_found.length > 0
+  end
+
+  def is_step(string)
+    string.include? 'move'
   end
   
   def run
