@@ -82,18 +82,6 @@ class Main
     file = File.open(filename)
     raw_data = file.read.split("\n")
     parse_drawing(raw_data)
-    # TODO: parse the data line by line first
-    # then store into diff variables
-
-    # hard code the parsing?
-    # get total row
-    # each crate takes 3 chars [x]
-    rows = []
-    # store the rows first 
-    # until you reach numbers
-    # then get the numbers in an Array
-    # remove the empty spaces
-    # then can use the largest number to sort through the rows
   end
   
   def run
