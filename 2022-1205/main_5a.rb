@@ -9,9 +9,35 @@ class Main
 
   def parse_stacks(stack_ids, rows)
     stacks = {}
+    stack_count = stack_ids.length
 
     stack_ids.each do |id|
-      stacks[id.to_sym] = []
+      stacks[id.to_s.to_sym] = []
+    end
+    rows.reverse.each do |row|
+      #level = row.split(' ') #// doesn't work
+      level = row.split('') #// works better
+      #puts "row: " + level.to_s
+      # TODO store each row into the stacks
+
+
+      stack_index = 0
+      level_index = stack_index + 1
+      while stack_index < stack_count
+        crate = row[level_index]
+        #puts "crate: " + crate
+        #store crate into array
+        if crate != " "
+          stack_key = stack_ids[stack_index].to_s
+          #puts "stack_key: " + stack_key
+
+          stacks[stack_key.to_sym] << crate
+        end
+        
+        # once i have the id of each stack then I can go 
+        stack_index += 1
+        level_index += 4
+      end
     end
 
     return stacks
@@ -44,7 +70,7 @@ class Main
       end
       if has_nums && !store_stacks && !store_steps
         message = 'store IDs'
-        @stack_ids = nums_found
+        @stack_ids = nums_found.map { |x| x.to_i }
         @stacks = parse_stacks(@stack_ids, rows)
         #@stacks << item # TODO: parse into HASH of ARRAYS
       end
@@ -52,7 +78,7 @@ class Main
         message = "store steps"
         @steps << item
       end
-      puts "- #{item} >> #{message}"
+      #puts "- #{item} >> #{message}"
       #puts ">> #{item} >> nums?#{has_nums.to_s} - empty?#{empty_line}"
     end
     puts "rows:", rows
