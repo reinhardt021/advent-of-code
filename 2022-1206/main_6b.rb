@@ -19,7 +19,7 @@ class Main
       end
     end
 
-    unique = counts.keys.length == 4
+    unique = counts.keys.length == 14
     return unique
   end
 
@@ -34,18 +34,18 @@ class Main
       char = @data[index]
       index += 1
 
-      sequence.shift if sequence.length == 4
+      sequence.shift if sequence.length == 14
       sequence << char
 
-      if sequence.length != 4
+      if sequence.length != 14
+        puts "seq: #{sequence.to_s}"
         next
       end
 
-      puts "seq: #{sequence.to_s}"
       unique_seq = is_seq_unique(sequence)
       if unique_seq
+        puts "seq: #{sequence.to_s}"
         # exit loop
-        # and return count of seq
         break
       end
     end
@@ -67,18 +67,17 @@ in3 = 'nppdvjthqldpwncqszvftbrmjlhg'  # 6
 in4 = 'nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg' # 10
 in5 = 'zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw' # 11
 
+#assertEquals(19, Main.new(in1).run())
+#assertEquals(23, Main.new(in2).run())
+#assertEquals(23, Main.new(in3).run())
+#assertEquals(29, Main.new(in4).run())
+#assertEquals(26, Main.new(in5).run())
 main = Main.new('input_6a.txt')
 results = main.run
 puts "results: " + results.to_s
-assertEquals(7, results)
-#assertEquals(7, Main.new(in1).run())
-#assertEquals(5, Main.new(in2).run())
-#assertEquals(6, Main.new(in3).run())
-#assertEquals(10, Main.new(in4).run())
-#assertEquals(11, Main.new(in5).run())
+assertEquals(19, results)
 
 main = Main.new('input_6b.txt')
 results = main.run
 puts "results: " + results.to_s
-#assertEquals(582, results)
 
