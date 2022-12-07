@@ -50,6 +50,7 @@ class Main
       end
     end
 
+    puts smallest_dir
     return dirs[smallest_dir]
   end
 
@@ -187,7 +188,7 @@ results = main.run
 puts "results: " + results.to_s
 assertEquals(24933642, results)
 
-#main = Main.new('input_7b.txt')
-#results = main.run
-#puts "results: " + results.to_s
+main = Main.new('input_7b.txt')
+results = main.run
+puts "results: " + results.to_s
 
