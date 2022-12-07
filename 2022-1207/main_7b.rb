@@ -15,11 +15,42 @@ class Main
   def run
     tree = parse_data(@data)
     dirs = get_dir_sizes(100000, tree, '/')
-    puts "FINAL TREE: #{tree.to_s}"
     puts "final DIR within list: #{dirs.to_s}"
-    #sizes = dirs.map { |dir| dir[:size] }
-
+    return get_smallest_dir_to_delete(dirs)
     #return sizes.sum
+  end
+
+  def get_smallest_dir_to_delete(dirs)
+    total_disk_space = 70 * 1000 * 1000
+    min_update_space = 30 * 1000 * 1000 
+
+    #get total space taken in /
+    total_used = dirs['/']
+    # calculate free space
+    unused_space = total_disk_space - total_used
+    # calculate how much more space is needed
+    space_needed = min_update_space - unused_space
+    puts "update[#{min_update_space}] unused[#{unused_space}] needed[#{space_needed}]"
+    # and then which dir that is
+
+    # loop through to calculate the  
+    # need to calculate the diff between dir size and min
+    # small positive is what you go for
+    
+    #diffs = dirs.keys.map { |key| dirs[key] - space_needed }
+    #puts "diffs: #{diffs.to_s}"
+
+    smallest_dir = nil
+    smallest_diff = min_update_space
+    dirs.keys.each do |key|
+      diff = dirs[key] - space_needed
+      if 0 <= diff && diff < smallest_diff
+        smallest_diff = diff
+        smallest_dir = key
+      end
+    end
+
+    return dirs[smallest_dir]
   end
 
   def get_dir_sizes(limit, tree, node_path)
@@ -30,12 +61,8 @@ class Main
     curr_node[:children_dirs].each do |dir_path|
       # so it does matter we calculate the dir sizes here 1st
       child_dir_sizes = get_dir_sizes(limit, tree, dir_path)
-      puts 'before dir sizes: ' + dir_sizes.to_s
-      puts 'child dir sizes: ' + child_dir_sizes.to_s
       dir_sizes = dir_sizes.merge(child_dir_sizes) 
-      puts 'after dir sizes: ' + dir_sizes.to_s
 
-      # once the children calculated then can add to this node size
       child_node = tree[dir_path]
       total_dirs += child_node[:size]
     end
@@ -47,9 +74,6 @@ class Main
     tree[node_path] = curr_node
 
     dir_sizes[node_path] = total_size
-    #if total_size <= limit
-      #dirs << curr_node
-    #end
 
     return dir_sizes
   end
