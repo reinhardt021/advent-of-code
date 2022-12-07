@@ -19,31 +19,17 @@ class Main
     puts "final DIR within list: #{dirs.to_s}"
     sizes = dirs.map { |dir| dir[:size] }
 
-    #total = dirs[:within].reduce do |sum, dir|
-      #puts '>>> DIR SIZE' + dir[:size]
-      #sum += dir[:size]
-
-      #return sum
-    #end
-
     return sizes.sum
   end
 
   def find_dirs_within(limit, tree, node_path)
     dirs = []
-    #dirs = {
-      #children: [],
-      #within: [],
-    #} 
 
     curr_node = tree[node_path]
     total_dirs = 0
     curr_node[:children_dirs].each do |dir_path|
       # so it does matter we calculate the dir sizes here 1st
       child_dirs = find_dirs_within(limit, tree, dir_path)
-      # concat to dirs
-      #dirs[:children] += child_dirs[:children]
-      #dirs[:within] += child_dirs[:within]
       dirs += child_dirs
 
       # once the children calculated then can add to this node size
@@ -51,21 +37,14 @@ class Main
       total_dirs += child_node[:size]
     end
 
-    # just don't calculate dir sizes off the returned array of just within
-    # this just needs to be the immediate children
-    #dir_sizes = dirs[:children].map { |dir| dir[:size] }
-    #total_dirs = dir_sizes.sum
     total_files = curr_node[:children_files].sum
     total_size = total_files + total_dirs 
 
     curr_node[:size] = total_size
     tree[node_path] = curr_node
     if total_size <= limit
-      #dirs[:within] << curr_node
       dirs << curr_node
     end
-    #dirs[:children] << curr_node #store all children with data needed
-    # no it should only be the immediate children right?
 
     return dirs
   end
@@ -119,18 +98,14 @@ class Main
         #puts "    LINE: #{parts.to_s}"
         directory = parts[2]
         if directory == UP
-          # don't create new node
-          # change curr_node to parent node
           parent_path = curr_node[:parent]
           parent_node = tree[parent_path]
           curr_node = parent_node
-          # then just go to next loop
         else
           # check if node exists 
           #   if exists then change to node - stretch?
           #   else create a node in the tree
           parent_path = curr_node ? curr_node[:full_path] : ''
-          #suffix = (directory == '/' ? '' : '/')
           glue = (directory == '/' || parent_path == '/') ? '' : '/'
           full_path = parent_path + glue + directory #+ suffix
           new_node = {
@@ -164,7 +139,6 @@ class Main
       end
 
     end
-    #puts "FINAL TREE: #{tree.to_s}"
 
     return tree
   end
@@ -184,7 +158,7 @@ results = main.run
 puts "results: " + results.to_s
 assertEquals(95437, results)
 
-#main = Main.new('input_7b.txt')
-#results = main.run
-#puts "results: " + results.to_s
+main = Main.new('input_7b.txt')
+results = main.run
+puts "results: " + results.to_s
 
