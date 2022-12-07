@@ -17,21 +17,24 @@ class Main
     dirs = find_dirs_within(100000, tree, '/')
     puts "FINAL TREE: #{tree.to_s}"
     puts "final DIR within list: #{dirs.to_s}"
-    total = dirs[:within].reduce do |sum, dir|
-      puts '>>> DIR SIZE' + dir[:size]
+    sizes = dirs.map { |dir| dir[:size] }
+
+    #total = dirs[:within].reduce do |sum, dir|
+      #puts '>>> DIR SIZE' + dir[:size]
       #sum += dir[:size]
 
-      return sum
-    end
+      #return sum
+    #end
 
-    return total
+    return sizes.sum
   end
 
   def find_dirs_within(limit, tree, node_path)
-    dirs = {
-      children: [],
-      within: [],
-    } 
+    dirs = []
+    #dirs = {
+      #children: [],
+      #within: [],
+    #} 
 
     curr_node = tree[node_path]
     total_dirs = 0
@@ -39,8 +42,9 @@ class Main
       # so it does matter we calculate the dir sizes here 1st
       child_dirs = find_dirs_within(limit, tree, dir_path)
       # concat to dirs
-      dirs[:children] += child_dirs[:children]
-      dirs[:within] += child_dirs[:within]
+      #dirs[:children] += child_dirs[:children]
+      #dirs[:within] += child_dirs[:within]
+      dirs += child_dirs
 
       # once the children calculated then can add to this node size
       child_node = tree[dir_path]
@@ -57,7 +61,8 @@ class Main
     curr_node[:size] = total_size
     tree[node_path] = curr_node
     if total_size <= limit
-      dirs[:within] << curr_node
+      #dirs[:within] << curr_node
+      dirs << curr_node
     end
     #dirs[:children] << curr_node #store all children with data needed
     # no it should only be the immediate children right?
