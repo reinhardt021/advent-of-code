@@ -16,6 +16,17 @@ class Main
     return "#{y}-#{x}"
   end
 
+  def get_x_y(tree_key)
+    coordinates = tree_key.split('-')
+    y = coordinates[0]
+    x = coordinates[1]
+
+    return {
+      x: x,
+      y: y,
+    }
+  end
+
   def is_visible_left(trees, x, y, height)
     neighbor_y = y
     neighbor_x = x - 1
@@ -51,6 +62,7 @@ class Main
   def create_trees(map_data)
     trees = {}
     row_count = map_data.length
+    col_count = nil
     y_index = 0
     while y_index < row_count
       row = map_data[y_index]
@@ -84,21 +96,42 @@ class Main
       y_index += 1
     end
 
-    return trees
+    return {
+      trees: trees,
+      row_count: row_count,
+      col_count: col_count,
+    }
   end
 
-  def get_visible_count(trees)
+  def get_visible_count(trees, row_count, col_count)
     # loop through the trees one more time for the count
-    trees.keys.reduce(0) do |count, tree|
+    trees.keys.reverse.reduce(0) do |count, tree_key|
+
       puts "count[#{count}]"
-      tree_node = trees[tree]
-      puts "tree_node[#{tree}] #{tree_node}"
-      if tree_node[:visible_left]
+
+      tree = trees[tree_key]
+      puts "tree[#{tree_key}] #{tree}"
+
+      x_y = get_x_y(tree_key)
+      node_x = x_y[:x]
+      node_y = x_y[:y]
+
+      if tree[:visible_bottom] == false
+        # check if visible_bottom if not bottom row
+        tree[:visible_bottom] = is_visible_bottom(trees, node_x, node_y, tree[:height])
+      end
+      if tree[:visible_right] == false
+        tree[:visible_right] = is_visible_right(trees, node_x, node_y, tree[:height])
+      end
+
+
+
+      if tree[:visible_left]
         count += 1
         #puts "count[#{count}]"
         count
         next
-      elsif tree_node[:visible_top]
+      elsif tree[:visible_top]
         count += 1
         #puts "count[#{count}]"
         next
@@ -121,10 +154,13 @@ class Main
   end
 
   def run 
-    trees = create_trees(@map_data)
+    output = create_trees(@map_data)
+    tree = output[:trees]
+    row_count = output[:row_count]
+    col_count = output[:col_count]
     puts "trees: " + trees.to_s
-    #puts "trees: #{trees.keys.to_s}"
-    result = get_visible_count(trees)
+    puts "trees: #{trees.keys.reverse.to_s}"
+    result = get_visible_count(trees, row_count, col_count)
 
     return result
   end
