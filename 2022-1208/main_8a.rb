@@ -87,22 +87,46 @@ class Main
     return trees
   end
 
+  def get_visible_count(trees)
+    # loop through the trees one more time for the count
+    trees.keys.reduce(0) do |count, tree|
+      puts "count[#{count}]"
+      tree_node = trees[tree]
+      puts "tree_node[#{tree}] #{tree_node}"
+      if tree_node[:visible_left]
+        count += 1
+        #puts "count[#{count}]"
+        count
+        next
+      elsif tree_node[:visible_top]
+        count += 1
+        #puts "count[#{count}]"
+        next
+      else
+        # calculate visible right count
+        # could do this part in reverse
+        # that way we can do the checks and update the tree 
+        # much like the first loop 
+        # so that we can get a good count as we go
+        # and no need to double count
+      end
+      #elsif is_visible_right(trees, tree)
+        #count += 1
+      #elsif is_visible_bottom(trees, tree)
+        #count += 1
+      #end
+      
+      count
+    end
+  end
+
   def run 
     trees = create_trees(@map_data)
-    #puts "trees: " + trees.to_s
+    puts "trees: " + trees.to_s
+    #puts "trees: #{trees.keys.to_s}"
+    result = get_visible_count(trees)
 
-    puts "trees: #{trees.keys.to_s}"
-
-    # as you go through
-    # ex 1-1 you can check if to the left it is larger
-    # if larger then see if neighbor has visibility
-    # if not then 
-    # might be ggood to store an object with coordinate keys
-    #   and visible-left
-    #   visible-top
-    #   visible-right
-    #   visible-down
-    # this way you can leverage those then don't have to loop through all the columns all the time
+    return result
   end
 
 end
