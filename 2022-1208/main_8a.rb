@@ -12,25 +12,64 @@ class Main
     return lines.map { |line| line.split('') }
   end
   
-  def run 
-    trees = {}
-    row_count = @map_data.length
+  def get_tree_key(x, y)
+    return "#{y}-#{x}"
+  end
 
+  def is_visible_left(trees, x, y, height)
+    neighbor_y = y
+    neighbor_x = x - 1
+    neighbor = get_tree_key(neighbor_x, neighbor_y)
+    tree_neighbor = trees[neighbor]
+
+    if tree_neighbor[:height] < height
+      return tree_neighbor[:visible_left]
+    else
+      return false
+    end
+  end
+
+  def is_visible_top(trees, x, y, height)
+    neighbor_y = y - 1
+    neighbor_x = x 
+    neighbor = get_tree_key(neighbor_x, neighbor_y)
+    tree_neighbor = trees[neighbor]
+
+    if tree_neighbor[:height] < height
+      return tree_neighbor[:visible_top]
+    else
+      return false
+    end
+  end
+
+  def is_visible_right()
+  end
+
+  def is_visible_bottom()
+  end
+
+  def create_trees(map_data)
+    trees = {}
+    row_count = map_data.length
     y_index = 0
     while y_index < row_count
-      row = @map_data[y_index]
+      row = map_data[y_index]
       col_count = row.length
 
       x_index = 0
       while x_index < col_count
         tree_height = row[x_index].to_i
-        tree = "#{y_index}-#{x_index}"
+        tree = get_tree_key(x_index, y_index)
+        #puts "tree: #{tree}"
+
+        visible_left = x_index == 0 ? true : is_visible_left(trees, x_index, y_index, tree_height)
+        visible_top = y_index == 0 ? true : is_visible_top(trees, x_index, y_index, tree_height)
 
         # can't do this yet
-        visible_left = x_index == 0 ? true : is_visible_left(tree)
-        visible_top = y_index == 0 ? true : is_visible_top(tree)
-        visible_right = x_index == (col_count - 1) ? true : is_visible_top(tree)
-        visible_bottom = y_index == (row_count - 1) ? true : is_visible_top(tree)
+        # will have to check these later
+        # can do these recursively if needed
+        visible_right = (x_index == (col_count - 1))
+        visible_bottom = (y_index == (row_count - 1))
         trees[tree] = {
           height: tree_height,
           visible_left: visible_left,
@@ -45,7 +84,15 @@ class Main
       y_index += 1
     end
 
-    puts "trees: " + trees.to_s
+    return trees
+  end
+
+  def run 
+    trees = create_trees(@map_data)
+    #puts "trees: " + trees.to_s
+
+    puts "trees: #{trees.keys.to_s}"
+
     # as you go through
     # ex 1-1 you can check if to the left it is larger
     # if larger then see if neighbor has visibility
