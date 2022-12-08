@@ -16,16 +16,16 @@ class Main
     return "#{y}-#{x}"
   end
 
-  def get_x_y(tree_key)
-    coordinates = tree_key.split('-')
-    y = coordinates[0].to_i
-    x = coordinates[1].to_i
+  #def get_x_y(tree_key)
+    #coordinates = tree_key.split('-')
+    #y = coordinates[0].to_i
+    #x = coordinates[1].to_i
 
-    return {
-      x: x,
-      y: y,
-    }
-  end
+    #return {
+      #x: x,
+      #y: y,
+    #}
+  #end
 
   def is_visible_left(trees, x, y, height)
     next_y = y
@@ -67,39 +67,39 @@ class Main
     end
   end
 
-  def is_visible_right(trees, x, y, height)
-    next_y = y
-    next_x = x + 1
+  def is_visible_right(trees, tree)
+    next_y = tree[:y]
+    next_x = tree[:x] + 1
     next_key = get_tree_key(next_x, next_y)
     next_tree = trees[next_key]
     next_height = next_tree[:height]
 
-    if next_height >= height
+    if tree[:height] <= next_height
       return false
     end
 
     if next_tree[:visible_right]
       return true
     else
-      return is_visible_right(trees, next_x, next_y, next_height)
+      return is_visible_right(trees, next_tree)
     end
   end
 
-  def is_visible_bottom(trees, x, y, height)
-    next_y = y + 1
-    next_x = x
+  def is_visible_bottom(trees, tree)
+    next_y = tree[:y] + 1
+    next_x = tree[:x]
     next_key = get_tree_key(next_x, next_y)
     next_tree = trees[next_key]
     next_height = next_tree[:height]
 
-    if next_height >= height
+    if tree[:height] <= next_height
       return false
     end
 
     if next_tree[:visible_bottom]
       return true
     else
-      return is_visible_bottom(trees, next_x, next_y, next_height)
+      return is_visible_bottom(trees, next_tree)
     end
   end
 
@@ -116,17 +116,15 @@ class Main
       while x_index < col_count
         tree_height = row[x_index].to_i
         tree = get_tree_key(x_index, y_index)
-        #puts "tree: #{tree}"
 
         visible_left = x_index == 0 ? true : is_visible_left(trees, x_index, y_index, tree_height)
         visible_top = y_index == 0 ? true : is_visible_top(trees, x_index, y_index, tree_height)
 
-        # can't do this yet
-        # will have to check these later
-        # can do these recursively if needed
         visible_right = (x_index == (col_count - 1))
         visible_bottom = (y_index == (row_count - 1))
         trees[tree] = {
+          x: x_index,
+          y: y_index,
           height: tree_height,
           visible_left: visible_left,
           visible_top: visible_top,
@@ -150,24 +148,20 @@ class Main
   def get_visible_count(trees, row_count, col_count)
     # loop through the trees one more time for the count
     trees.keys.reverse.reduce(0) do |count, tree_key|
-
-
       tree = trees[tree_key]
-
-      x_y = get_x_y(tree_key)
-      map_x = x_y[:x]
-      map_y = x_y[:y]
+      #x_y = get_x_y(tree_key)
+      #map_x = tree[:x]
+      #map_y = tree[:y]
 
       if tree[:visible_bottom] == false
         # check if visible_bottom if not bottom row
-        tree[:visible_bottom] = is_visible_bottom(trees, map_x, map_y, tree[:height])
+        tree[:visible_bottom] = is_visible_bottom(trees, tree)
       end
       if tree[:visible_right] == false
-        tree[:visible_right] = is_visible_right(trees, map_x, map_y, tree[:height])
+        tree[:visible_right] = is_visible_right(trees, tree)
       end
 
       trees[tree_key] = tree
-
 
       visible = nil
       if tree[:visible_left]
@@ -184,7 +178,13 @@ class Main
         count += 1
       end
 
-      puts "[#{tree_key}] #{visible} count[#{count}]"
+
+      h = tree[:height]
+      vl = tree[:visible_left]
+      vt = tree[:visible_top]
+      vr = tree[:visible_right]
+      vb = tree[:visible_bottom]
+      puts "{#{tree_key}}[#{h}] (#{visible}) <[#{vl}] ^[#{vt}] >[#{vr}] _[#{vb}] count[#{count}]"
       
       count
     end
