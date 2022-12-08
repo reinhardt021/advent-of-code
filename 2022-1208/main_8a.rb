@@ -18,8 +18,8 @@ class Main
 
   def get_x_y(tree_key)
     coordinates = tree_key.split('-')
-    y = coordinates[0]
-    x = coordinates[1]
+    y = coordinates[0].to_i
+    x = coordinates[1].to_i
 
     return {
       x: x,
@@ -28,35 +28,79 @@ class Main
   end
 
   def is_visible_left(trees, x, y, height)
-    neighbor_y = y
-    neighbor_x = x - 1
-    neighbor = get_tree_key(neighbor_x, neighbor_y)
-    tree_neighbor = trees[neighbor]
+    next_y = y
+    next_x = x - 1
+    next_key = get_tree_key(next_x, next_y)
+    next_tree = trees[next_key]
+    next_height = next_tree[:height]
 
-    if tree_neighbor[:height] < height
-      return tree_neighbor[:visible_left]
-    else
+    if next_height >= height
       return false
+    end
+
+    # can't rely on this fully
+    # have a false negative
+    # only if it is true can we trust it
+    if next_tree[:visible_left]
+      return true
+    else
+      # if false then have to go through the rest to find out
+      return is_visible_left(trees, next_x, next_y, next_height)
     end
   end
 
   def is_visible_top(trees, x, y, height)
-    neighbor_y = y - 1
-    neighbor_x = x 
-    neighbor = get_tree_key(neighbor_x, neighbor_y)
-    tree_neighbor = trees[neighbor]
+    next_y = y - 1
+    next_x = x 
+    next_key = get_tree_key(next_x, next_y)
+    next_tree = trees[next_key]
+    next_height = next_tree[:height]
 
-    if tree_neighbor[:height] < height
-      return tree_neighbor[:visible_top]
-    else
+    if next_height >= height
       return false
+    end
+
+    if next_tree[:visible_top]
+      return true
+    else
+      return is_visible_top(trees, next_x, next_y, next_height)
     end
   end
 
-  def is_visible_right()
+  def is_visible_right(trees, x, y, height)
+    next_y = y
+    next_x = x + 1
+    next_key = get_tree_key(next_x, next_y)
+    next_tree = trees[next_key]
+    next_height = next_tree[:height]
+
+    if next_height >= height
+      return false
+    end
+
+    if next_tree[:visible_right]
+      return true
+    else
+      return is_visible_right(trees, next_x, next_y, next_height)
+    end
   end
 
-  def is_visible_bottom()
+  def is_visible_bottom(trees, x, y, height)
+    next_y = y + 1
+    next_x = x
+    next_key = get_tree_key(next_x, next_y)
+    next_tree = trees[next_key]
+    next_height = next_tree[:height]
+
+    if next_height >= height
+      return false
+    end
+
+    if next_tree[:visible_bottom]
+      return true
+    else
+      return is_visible_bottom(trees, next_x, next_y, next_height)
+    end
   end
 
   def create_trees(map_data)
@@ -107,47 +151,40 @@ class Main
     # loop through the trees one more time for the count
     trees.keys.reverse.reduce(0) do |count, tree_key|
 
-      puts "count[#{count}]"
 
       tree = trees[tree_key]
-      puts "tree[#{tree_key}] #{tree}"
 
       x_y = get_x_y(tree_key)
-      node_x = x_y[:x]
-      node_y = x_y[:y]
+      map_x = x_y[:x]
+      map_y = x_y[:y]
 
       if tree[:visible_bottom] == false
         # check if visible_bottom if not bottom row
-        tree[:visible_bottom] = is_visible_bottom(trees, node_x, node_y, tree[:height])
+        tree[:visible_bottom] = is_visible_bottom(trees, map_x, map_y, tree[:height])
       end
       if tree[:visible_right] == false
-        tree[:visible_right] = is_visible_right(trees, node_x, node_y, tree[:height])
+        tree[:visible_right] = is_visible_right(trees, map_x, map_y, tree[:height])
       end
 
+      trees[tree_key] = tree
 
 
+      visible = nil
       if tree[:visible_left]
+        visible = '<'
         count += 1
-        #puts "count[#{count}]"
-        count
-        next
       elsif tree[:visible_top]
+        visible = '^'
         count += 1
-        #puts "count[#{count}]"
-        next
-      else
-        # calculate visible right count
-        # could do this part in reverse
-        # that way we can do the checks and update the tree 
-        # much like the first loop 
-        # so that we can get a good count as we go
-        # and no need to double count
+      elsif tree[:visible_right]
+        visible = '>'
+        count += 1
+      elsif tree[:visible_bottom]
+        visible = '_'
+        count += 1
       end
-      #elsif is_visible_right(trees, tree)
-        #count += 1
-      #elsif is_visible_bottom(trees, tree)
-        #count += 1
-      #end
+
+      puts "[#{tree_key}] #{visible} count[#{count}]"
       
       count
     end
@@ -155,7 +192,7 @@ class Main
 
   def run 
     output = create_trees(@map_data)
-    tree = output[:trees]
+    trees = output[:trees]
     row_count = output[:row_count]
     col_count = output[:col_count]
     puts "trees: " + trees.to_s
@@ -180,6 +217,16 @@ main = Main.new('input_8a.txt')
 results = main.run
 puts "results: " + results.to_s
 assertEquals(21, results)
+
+#    01234
+#    -----
+# 0| 30373
+# 1| 255x2
+# 2| 65x32
+# 3| 3x5x9
+# 4| 35390
+# EXPECTED RESULTS
+
 
 #main = Main.new('input_8b.txt')
 #results = main.run
