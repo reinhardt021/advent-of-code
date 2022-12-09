@@ -39,27 +39,11 @@ class Main
   end
 
   def move_tail(tail, head, direction)
-    # TODO how far head is from tail
-    # if the distance is greater than 1 space in X or Y
-    # then choose the axis that matches to close gap
-    #   if not on same X or Y then go diagonally towards it
-    #   >> choose the axis that is closer close gap not further one
-    # then check if within 1 distance then don't move
     x_distance = get_distance(head, tail, :x)
     y_distance = get_distance(head, tail, :y)
 
     puts "head{#{head[:x]},#{head[:y]}} tail{#{tail[:x]},#{tail[:y]}} x_d[#{x_distance}] y_d[#{y_distance}]"
 
-    # if x_d is far by 2 
-    # then closer by x += 1
-    # and if y_d == 0 then dont move
-    # else y += 1 as well because it is diagonal
-    # 
-    # if y_d is far by 2 
-    # then closer by y +=1
-    # and if x_d == 0 then keep same
-    # else x +=1 as well because it is diagonal
-    # then closer on x
     if x_distance > 1 
       tail[:x] += 1 * (direction == LEFT ? -1 : 1)
       if y_distance > 0
@@ -68,7 +52,7 @@ class Main
       tail = store_new_posn(tail)
     elsif y_distance > 1
       tail[:y] += 1 * (direction == DOWN ? -1 : 1)
-      if y_distance > 0
+      if x_distance > 0
         tail[:x] += 1 * (direction == LEFT ? -1 : 1)
       end
       tail = store_new_posn(tail)
