@@ -41,31 +41,37 @@ class Main
   def move_tail(tail, head, direction)
     x_distance = get_distance(head, tail, :x)
     y_distance = get_distance(head, tail, :y)
+    x_diff = x_distance.magnitude
+    y_diff = y_distance.magnitude
 
-    puts "head{#{head[:x]},#{head[:y]}} tail{#{tail[:x]},#{tail[:y]}} x_d[#{x_distance}] y_d[#{y_distance}]"
+    puts "head{#{head[:x]},#{head[:y]}} tail{#{tail[:x]},#{tail[:y]}} x_d[#{x_diff}] y_d[#{y_diff}]"
 
-    if x_distance > 1 
-      tail[:x] += 1 * (direction == LEFT ? -1 : 1)
-      if y_distance > 0
-        tail[:y] += 1 * (direction == DOWN ? -1 : 1)
+    if x_diff > 1 
+      # TODO: can't just do this direction check 
+      # has to be a check of which way the diff is on other axis
+      # to close gap properly
+      tail[:x] += 1 * (x_distance < 0 ? -1 : 1)
+      if y_diff > 0
+        tail[:y] += 1 * (y_distance < 0 ? -1 : 1)
       end
       tail = store_new_posn(tail)
-    elsif y_distance > 1
-      tail[:y] += 1 * (direction == DOWN ? -1 : 1)
-      if x_distance > 0
-        tail[:x] += 1 * (direction == LEFT ? -1 : 1)
+    elsif y_diff > 1
+      tail[:y] += 1 * (y_distance < 0 ? -1 : 1)
+      if x_diff > 0
+        tail[:x] += 1 * (x_distance < 0 ? -1 : 1)
       end
       tail = store_new_posn(tail)
     end
 
     # TODO: try to render the thing to debug it
+    # looks lke the BUG shows up on the last two iterations of R 4
 
     return tail
   end
 
   def get_distance(head, tail, axis)
     #puts "head #{head.to_s} tail #{tail.to_s} axis #{axis.to_s}"
-    return (head[axis] - tail[axis]).magnitude
+    return (head[axis] - tail[axis])
   end
 
   def run
