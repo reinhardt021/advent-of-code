@@ -147,5 +147,10 @@ this is the ideal spot for the tree house.
 Consider each tree on your map. 
 What is the highest scenic score possible for any tree?
 
+345168
+
+That's the right answer! You are one gold star closer to collecting enough star fruit.
+
+You have completed Day 8!
 
 
