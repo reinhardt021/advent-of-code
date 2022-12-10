@@ -421,4 +421,16 @@ causes the CRT to produce the following image:
 Render the image given by your program. 
 What eight capital letters appear on your CRT?
 
+results:
+####...##.#..#.###..#..#.#....###..####.
+#.......#.#..#.#..#.#..#.#....#..#....#.
+###.....#.#..#.###..#..#.#....#..#...#..
+#.......#.#..#.#..#.#..#.#....###...#...
+#....#..#.#..#.#..#.#..#.#....#.#..#....
+#.....##...##..###...##..####.#..#.####.
+
+That's the right answer! You are one gold star closer to collecting enough star fruit.
+
+You have completed Day 10! 
+
 
