@@ -16,29 +16,50 @@ class Main
     return (cycle - 20) % 40 == 0
   end
 
+  def update_milestones(milestones, cycle, x)
+    milestones[cycle.to_s.to_sym] = {
+      register: x,
+      cycle: cycle,
+      signal_strength: (cycle * x),
+    }
+
+    return milestones
+  end
+
   def run
     milestones = {}
     x = 1 # register
     cycle = 0
+
     @data.each do |line|
       cycle += 1
       parts = line.split(' ')
       command = parts[0]
-      puts "cyc[#{cycle}] cmd[#{parts[0]}] in[#{parts[1]}] x[#{x}] "
-      milestone = is_milestone(cycle)
-      puts "MILESTONE? #{milestone ? 'YES' : 'NO' }"
+
+      puts "cyc[#{cycle}] cmd[#{parts[0]} #{parts[1]}] x[#{x}] "
+      if is_milestone(cycle)
+        milestones = update_milestones(milestones, cycle, x) 
+      end
 
       # if noop then don't do anything just let loop again
       if command == ADDX 
         cycle += 1
+
+        puts "cyc[#{cycle}] cmd[#{parts[0]} #{parts[1]}] x[#{x}] "
+        if is_milestone(cycle)
+          milestones = update_milestones(milestones, cycle, x) 
+        end
+
         value = parts[1].to_i
         x += value
-        puts "cyc[#{cycle}] cmd[#{parts[0]}] in[#{parts[1]}] x[#{x}] "
-        milestone = is_milestone(cycle)
-        puts "MILESTONE? #{milestone ? 'YES' : 'NO' }"
       end
 
     end
+
+    puts "milestones: #{milestones.to_s}"
+    signal_strengths = milestones.keys.map { |key| milestones[key][:signal_strength] }
+
+    signal_strengths.sum
   end
 
 end
