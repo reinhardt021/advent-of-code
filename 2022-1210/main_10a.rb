@@ -82,6 +82,10 @@ files = [
     name: 'input_10b.txt',
     expected_result: 13140,
   },
+  {
+    name: 'input_10c.txt',
+    #expected_result: 13140,
+  },
 ]
 
 files.each do |file|
@@ -92,18 +96,4 @@ files.each do |file|
     assertEquals(file[:expected_result], results)
   end
 end
-
-#main = Main.new('input_9a.txt')
-#results = main.run
-#puts "results: " + results.to_s
-#assertEquals(1, results)
-
-#main = Main.new('input_9c.txt')
-#results = main.run
-#puts "results: " + results.to_s
-#assertEquals(36, results)
-
-#main = Main.new('input_9b.txt')
-#results = main.run
-#puts "results: " + results.to_s
 
