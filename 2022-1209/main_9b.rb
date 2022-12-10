@@ -44,7 +44,7 @@ class Main
     x_diff = x_distance.magnitude
     y_diff = y_distance.magnitude
 
-    puts "head{#{head[:x]},#{head[:y]}} tail{#{tail[:x]},#{tail[:y]}} x_d[#{x_diff}] y_d[#{y_diff}]"
+    #puts "head{#{head[:x]},#{head[:y]}} tail{#{tail[:x]},#{tail[:y]}} x_d[#{x_diff}] y_d[#{y_diff}]"
 
     if x_diff > 1 
       # TODO: can't just do this direction check 
@@ -74,11 +74,29 @@ class Main
     return (head[axis] - tail[axis])
   end
 
+  def create_tails
+    tails = {}
+
+    for i in (1..9)
+      tails[i.to_s] = {
+        x: 0,
+        y: 0,
+        trail: {
+          '0-0': 1
+        },
+      }
+    end
+
+    return tails
+  end
+
   def run
     head = {
       x: 0,
       y: 0,
     }
+    tails = create_tails
+    puts "tails: #{tails}"
     tail = {
       x: 0,
       y: 0,
@@ -95,11 +113,23 @@ class Main
 
       (paces).times do 
         head = move_head(head, direction)
-        tail = move_tail(tail, head, direction)
+        #curr_head = head
+        prev_tail = head
+        tails.keys.each do |tail_key|
+          curr_tail = tails[tail_key]  
+          tails[tail_key] = move_tail(curr_tail, prev_tail, direction)
+          #prev_tail = '1'
+          prev_tail = curr_tail
+        end
+        #tail = move_tail(tail, head, direction)
       end
     end
 
-    return tail[:trail].keys.length
+    last_tail_key = tails.keys.last
+    last_tail = tails[last_tail_key]
+    puts "tails: #{tails}"
+
+    return last_tail[:trail].keys.length
   end
 
 end
@@ -116,7 +146,12 @@ end
 main = Main.new('input_9a.txt')
 results = main.run
 puts "results: " + results.to_s
-assertEquals(13, results)
+assertEquals(1, results)
+
+main = Main.new('input_9c.txt')
+results = main.run
+puts "results: " + results.to_s
+assertEquals(36, results)
 
 main = Main.new('input_9b.txt')
 results = main.run
