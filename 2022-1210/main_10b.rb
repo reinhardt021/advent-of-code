@@ -105,12 +105,7 @@ class Main
 
     end
 
-    puts "CRT:", crt
-
-    #puts "milestones: #{milestones.to_s}"
-    #signal_strengths = milestones.keys.map { |key| milestones[key][:signal_strength] }
-
-    #signal_strengths.sum
+    return crt
   end
 
 end
@@ -131,7 +126,7 @@ files = [
   },
   {
     name: 'input_10b.txt',
-    expected_result: 13140,
+    ## expected_result: 13140,
   },
   {
     name: 'input_10c.txt',
@@ -142,7 +137,7 @@ files = [
 files.each do |file|
   main = Main.new(file[:name])
   results = main.run
-  puts "results: " + results.to_s
+  puts "\nresults: \n" + results.to_s
   if file[:expected_result]
     assertEquals(file[:expected_result], results)
   end
