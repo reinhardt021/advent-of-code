@@ -43,10 +43,15 @@ class Main
       sprite << (40)
     else
       # default
-      sprite << (x - 1)
+      #sprite << (x - 1)
       sprite << (x)
       sprite << (x + 1)
+      sprite << (x + 2)
     end
+    #indeces = (1..40).map {|i| (i % 10).to_s}
+    #puts "#{indeces.join('')}"
+    #pixels = (1..40).map {|i| sprite.include?(i) ? '#' : '.' }
+    #puts "#{pixels.join('')} X[#{x}]"
     
     return sprite
   end
