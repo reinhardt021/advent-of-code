@@ -1,21 +1,52 @@
 class Main
   REGISTER = 'X'
+  NOOP = 'noop'
+  ADDX = 'addx'
 
   def initialize(filename)
     file = File.open(filename)
     @data = file.read.split("\n")
   end
 
-  def run
-    index = 0
-    while index < @data.length
-      line = @data[index]
-      index += 1
-
-      puts "line: #{line}"
-
-      # TODO
+  def is_milestone(cycle)
+    if cycle == 20
+      return true
     end
+
+    return (cycle - 20) % 40 == 0
+  end
+
+  def run
+    x = 1
+    cycle = 0
+
+    @data.each do |line|
+      cycle += 1
+      parts = line.split(' ')
+      command = parts[0]
+      puts "cyc[#{cycle}] cmd[#{parts[0]}] in[#{parts[1]}] x[#{x}] "
+      milestone = is_milestone(cycle)
+      puts "milestone? #{milestone}"
+      # if noop then don't do anything just let loop again
+      # if addx then increment cycle
+      #   and add the input value to register
+      if command == ADDX 
+        cycle += 1
+        value = parts[1].to_i
+        x += value
+        puts "cyc[#{cycle}] cmd[#{parts[0]}] in[#{parts[1]}] x[#{x}] "
+      end
+
+    end
+    #index = 0
+    #while index < @data.length
+      #line = @data[index]
+      #index += 1
+
+      #parts = line.split(' ')
+      #puts "command[#{parts[0]}] input[#{parts[1]}]"
+
+    #end
   end
 
 end
