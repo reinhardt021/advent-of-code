@@ -17,36 +17,28 @@ class Main
   end
 
   def run
-    x = 1
+    milestones = {}
+    x = 1 # register
     cycle = 0
-
     @data.each do |line|
       cycle += 1
       parts = line.split(' ')
       command = parts[0]
       puts "cyc[#{cycle}] cmd[#{parts[0]}] in[#{parts[1]}] x[#{x}] "
       milestone = is_milestone(cycle)
-      puts "milestone? #{milestone}"
+      puts "MILESTONE? #{milestone ? 'YES' : 'NO' }"
+
       # if noop then don't do anything just let loop again
-      # if addx then increment cycle
-      #   and add the input value to register
       if command == ADDX 
         cycle += 1
         value = parts[1].to_i
         x += value
         puts "cyc[#{cycle}] cmd[#{parts[0]}] in[#{parts[1]}] x[#{x}] "
+        milestone = is_milestone(cycle)
+        puts "MILESTONE? #{milestone ? 'YES' : 'NO' }"
       end
 
     end
-    #index = 0
-    #while index < @data.length
-      #line = @data[index]
-      #index += 1
-
-      #parts = line.split(' ')
-      #puts "command[#{parts[0]}] input[#{parts[1]}]"
-
-    #end
   end
 
 end
@@ -65,10 +57,10 @@ files = [
     name: 'input_10a.txt',
     #expected_result: 1,
   },
-  #{
-    #name: 'input_10b.txt',
-    #expected_result: 13140,
-  #},
+  {
+    name: 'input_10b.txt',
+    expected_result: 13140,
+  },
 ]
 
 files.each do |file|
