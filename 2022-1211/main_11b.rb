@@ -82,13 +82,19 @@ class Main
   end
 
   def run
-    rounds = 20
+    rounds = 10000
+    #rounds = 20
     #rounds = 2
     round = 1
+    test = [1, 20] + (1..10).map {|x| x * 1000}
     while round <= rounds do
-      puts "\nROUND #{round}"
       @monkeys = run_round(@monkeys)
-      display_monkeys(@monkeys)
+      if test.include?(round)
+        puts "\nROUND #{round}"
+        display_monkeys(@monkeys)
+      else
+        puts round
+      end
       round += 1
     end
 
@@ -99,8 +105,8 @@ class Main
     # for test purposes
     monkeys.keys.each do |key|
       curr_monkey = monkeys[key]
-      items = curr_monkey[:items]
-      puts "Monkey #{key}: " + items.join(', ')
+      count = curr_monkey[:inspect_count]
+      puts "Monkey #{key}: inspected items #{count} times"
     end
   end
 
@@ -122,44 +128,45 @@ class Main
   end
 
   def assess_worry(worry, test, quotient)
-    worried = false
+    #worried = false
 
-    if test == DIVISIBLE
+    #if test == DIVISIBLE
       worried = (worry % quotient.to_i == 0)
-    end
+    #end
 
     return worried 
   end
 
-  def get_next_monkey(monkeys, worried)
-    next_key = monkeys
-    monkeys
-  end
-
   def run_round(monkeys)
-    monkeys.keys.each do |key|
+    index = 0
+    mkeys = monkeys.keys
+    while index < mkeys.length
+      key = mkeys[index]
+      index += 1
+    #monkeys.keys.each do |key|
       curr_monkey = monkeys[key]
-      curr_monkey[:items].each do |item|
+      items = curr_monkey[:items]
+      i = 0
+      while i < items.length
+        item = items[i]
+        i += 1
+      #curr_monkey[:items].each do |item|
         count = curr_monkey[:inspect_count]
         curr_monkey[:inspect_count] = 1 + count
 
         operand = curr_monkey[:operand]
         factor = curr_monkey[:factor]
         inspect_worry = get_new_level(item, operand, factor)
-        bored_worry = (inspect_worry / 3).floor
+        #bored_worry = (inspect_worry / 3).floor
 
         test = curr_monkey[:test]
         quotient = curr_monkey[:quotient]
-        worried = assess_worry(bored_worry, test, quotient)
+        worried = assess_worry(inspect_worry, test, quotient)
         which_monkey = worried ? :success_monkey : :fail_monkey
         monkey_key = curr_monkey[which_monkey].to_s.to_sym
-        #puts "m[#{key}] i[#{item}] C[#{count + 1}] iw[#{inspect_worry}] bw[#{bored_worry}] >> nm[#{monkey_key}]"
 
         next_monkey = monkeys[monkey_key]
-        #puts "next monkey: " + next_monkey.to_s
-        next_monkey[:items] << bored_worry
-        # remove item from original monkey
-
+        next_monkey[:items] << inspect_worry
       end
       curr_monkey[:items] = []
     end
@@ -202,7 +209,7 @@ aoc_day = 11
 files = {
   #file => expected result
   'a' => 10605, 
-  'b' => nil, # no expected result yet
+  #'b' => nil, # no expected result yet
   #'c' => nil, #13140,
 }
 
