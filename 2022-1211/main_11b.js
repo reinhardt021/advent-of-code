@@ -45,10 +45,10 @@ function parse_monkeys(lines) {
             continue; // to end loop
         }
 
-        console.log(`line_type: ${line_type}`);
+        //console.log(`line_type: ${line_type}`);
         if (line_type == STARTING) {
             const items = line.match(/\d+/g);
-            console.log(`items: ${items}`);
+            //console.log(`items: ${items}`);
             monkeys[curr_monkey]['items'] = items.map(x => parseInt(x))
         }
 
@@ -90,14 +90,18 @@ function parse_file(filename) {
 }
 
 function display_monkeys(monkeys) {
+
     const mkeys = Object.keys(monkeys)
     let index = 0
     while (index < mkeys.length) {
         const key = mkeys[index]
         index += 1
         const curr_monkey = monkeys[key]
+        //console.log("curr_monkey: " + JSON.stringify(curr_monkey)); 
+        const items = curr_monkey['items']
+        console.log(`Monkey ${key}: ` + items.join(', '));
         const count = curr_monkey['inspect_count']
-        console.log(`Monkey ${key}: inspected items ${count} times`);
+        //console.log(`Monkey ${key}: inspected items ${count} times`);
     }
 
 }
@@ -107,6 +111,8 @@ function get_new_level(worry, operand, factor) {
     if (factor == OLD) {
         factor = worry
     }
+    worry = parseInt(worry)
+    factor = parseInt(factor)
 
     if (operand == PLUS) {
         new_worry = worry + factor
@@ -121,8 +127,10 @@ function get_new_level(worry, operand, factor) {
 }
 
 function assess_worry(worry, test, quotient) {
+    const result = (worry % quotient) == 0
 
-    return (worry % quotient) == 0
+    //console.log(`w[${worry}] q[${quotient}] T/F[${result ? 'T':'F'}]`);
+    return result
 }
 
 function run_round(monkeys) {
@@ -145,17 +153,21 @@ function run_round(monkeys) {
             const operand = curr_monkey['operand']
             const factor = curr_monkey['factor']
             const inspect_worry = get_new_level(item, operand, factor)
+            const bored_worry = Math.floor(inspect_worry / 3)
+            const final_worry = bored_worry
 
             const test = curr_monkey['test']
             const quotient = curr_monkey['quotient']
-            const worried = assess_worry(inspect_worry, test, quotient)
+            const worried = assess_worry(final_worry, test, quotient)
             const which_monkey = worried ? 'success_monkey' : 'fail_monkey'
             const monkey_key = curr_monkey[which_monkey]
+            console.log(`w[${item}]${operand}${factor} iw[${inspect_worry}] bw[${bored_worry}] >> nm[${monkey_key}]`);
 
             const next_monkey = monkeys[monkey_key]
-            next_monkey['items'].concat(inspect_worry)
+            next_monkey['items'].push(final_worry)
             monkeys[monkey_key] = next_monkey
         }
+        console.log("curr_monkey: " + JSON.stringify(curr_monkey)); 
 
         curr_monkey['items'] = []
         monkeys[key] = curr_monkey
@@ -172,6 +184,7 @@ function calculate_monkey_business(monkeys) {
     });
 
     const decreasing = counts.sort().reverse()
+    console.log('decreasing: ' + decreasing);
     const first = decreasing[0]
     const second = decreasing[1]
     console.log(`1st[${first}] 2nd[${second}]`);
@@ -191,13 +204,13 @@ function run_code(monkeys) {
     const test = [1, 20].concat(range.map(x => (x+1)*1000))
 
     while (round <= rounds) {
-        //monkeys = run_round(monkeys)
-        if (test.includes(round)) {
-            console.log("\nROUND: " + round);
+        monkeys = run_round(monkeys)
+        //if (test.includes(round)) {
+            console.log("\n> ROUND: " + round);
             display_monkeys(monkeys)
-        } else {
-            console.log("ROUND: " + round);
-        }
+        //} else {
+            //console.log("x ROUND: " + round);
+        //}
         
         round += 1
     } 
