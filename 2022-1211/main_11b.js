@@ -15,21 +15,91 @@ const IF = 'If'
 const T = 'true:'
 const F = 'false:'
 
-let monkeys = []
+function parse_monkeys(lines) {
+    const monkeys = {};
+    let curr_monkey = undefined;
+
+    index = 0
+    while (index < lines.length) {
+        const line = lines[index]
+        const parts = line.split(' ')
+
+        const line_type = parts[0]
+    } 
+
+    return monkeys;
+}
+
 function parse_file(filename) {
-    const file  = readline.createInterface({
-        input: fs.createReadStream(filename),
-        output: process.stdout,
-        terminal: false
-    });
+    const file = fs.readFileSync(filename)
+    const lines = file.split("\n")
+    const monkeys = parse_monkeys(lines)
+    //const file  = readline.createInterface({
+        //input: fs.createReadStream(filename),
+        //output: process.stdout,
+        //terminal: false
+    //});
+
+    const monkeys = {};
+    let curr_monkey = undefined;
 
     file.on('line', line => {
         console.log('l: '+ line);
+
+        const parts = line.split(' ')
+
+        const line_type = parts[0]
+        if (line_type == MONKEY) {
+            curr_monkey = parts[1].match(/\d+/)[0]
+            monkeys[curr_monkey] = {
+                items: [],
+                operand: undefined,
+                factor: undefined,
+                test: undefined,
+                quotient: undefined,
+                success_monkey: undefined,
+                fail_monkey: undefined,
+                inspect_count: 0,
+            }
+        }
+
+        if (curr_monkey == undefined) {
+            return; // to end loop
+        }
+
+        if (line_type == STARTING) {
+            const items = line.match(/\d+/);
+            monkeys[curr_monkey]['items'] = items.map(x => parseInt(x))
+        }
+
+        if (line_type == OPERATION) {
+            const index_operand = 4
+            const index_factor = 5
+            const operand = parts[index_operand]
+            const factor = parts[index_factor]
+            monkeys[curr_monkey]['operand'] = operand
+            monkeys[curr_monkey]['factor'] = factor
+        }
+
+        if (line_type == TEST) {
+            const index_test = 1
+            const index_quotient = 3
+            const test = parts[index_test]
+            const quotient = parts[index_quotient]
+            monkeys[curr_monkey]['test'] = test
+            monkeys[curr_monkey]['quotient'] = quotient
+        }
+
+        if (line_type == IF) {
+            const monkey = line.match(/\d+/).shift()
+            const success_or_fail = parts[1] == T ? 'success_monkey' : 'fail_monkey' 
+            monkeys[curr_monkey][success_or_fail] = monkey
+        }
     });
 
-  //file = File.open(filename)
-  //data = file.read.split("\n")
-  //monkeys = parse_monkeys(data)
+    console.log('monkeys: ' + JSON.stringify(monkeys));
+
+    return monkeys;
 }
 
 
