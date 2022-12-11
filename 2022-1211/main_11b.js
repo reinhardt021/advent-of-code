@@ -49,7 +49,7 @@ function parse_monkeys(lines) {
         if (line_type == STARTING) {
             const items = line.match(/\d+/g);
             //console.log(`items: ${items}`);
-            monkeys[curr_monkey]['items'] = items.map(x => Number(x))
+            monkeys[curr_monkey]['items'] = items.map(x => get_int(x))
         }
 
         if (line_type == OPERATION) {
@@ -73,7 +73,7 @@ function parse_monkeys(lines) {
         if (line_type == IF) {
             const monkey = line.match(/\d+/).shift()
             const success_or_fail = parts[1] == T ? 'success_monkey' : 'fail_monkey' 
-            monkeys[curr_monkey][success_or_fail] = monkey
+            monkeys[curr_monkey][success_or_fail] = get_int(monkey)
         }
     } 
 
@@ -106,27 +106,31 @@ function display_monkeys(monkeys) {
 
 }
 
+function get_int(num) {
+    num = Math.floor(1 * num)
+
+    return num
+}
+
 function get_new_level(worry, operand, factor) {
     let new_worry = 0
     if (factor == OLD) {
         factor = worry
+    } else {
+        factor = get_int(factor)
     }
-    worry = Number(worry)
-    factor = Number(factor)
 
     if (operand == PLUS) {
         new_worry = worry + factor
-        return new_worry
     } else if (operand == MULTIPLY) {
         new_worry = worry * factor
-        return new_worry
     }
 
-    return new_worry
+    return Math.floor(new_worry)
 }
 
 function assess_worry(worry, test, quotient) {
-    quotient = Number(quotient)
+    quotient = get_int(quotient)
     const result = (worry % quotient) == 0
 
     //console.log(`w[${worry}] q[${quotient}] T/F[${result ? 'T':'F'}]`);
@@ -164,7 +168,7 @@ function run_round(monkeys) {
             const monkey_key = curr_monkey[which_monkey]
             //console.log(`w[${item}]${operand}${factor} iw[${inspect_worry}] bw[${bored_worry}] >> nm[${monkey_key}]`);
 
-            const next_monkey = monkeys[monkey_key]
+            const next_monkey = monkeys[`${monkey_key}`]
             next_monkey['items'].push(final_worry)
             monkeys[monkey_key] = next_monkey
         }
@@ -182,7 +186,7 @@ function calculate_monkey_business(monkeys) {
 
     const counts = Object.keys(monkeys).map(key => {
         const count = monkeys[key]['inspect_count']
-        return Number(count)
+        return get_int(count)
     });
 
     const decreasing = counts.sort((a, b) => a - b).reverse()

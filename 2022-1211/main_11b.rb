@@ -158,15 +158,17 @@ class Main
         factor = curr_monkey[:factor]
         inspect_worry = get_new_level(item, operand, factor)
         #bored_worry = (inspect_worry / 3).floor
+        #final_worry = bored_worry
+        final_worry = inspect_worry
 
         test = curr_monkey[:test]
         quotient = curr_monkey[:quotient]
-        worried = assess_worry(inspect_worry, test, quotient)
+        worried = assess_worry(final_worry, test, quotient)
         which_monkey = worried ? :success_monkey : :fail_monkey
         monkey_key = curr_monkey[which_monkey].to_s.to_sym
 
         next_monkey = monkeys[monkey_key]
-        next_monkey[:items] << inspect_worry
+        next_monkey[:items] << final_worry
       end
       curr_monkey[:items] = []
     end
