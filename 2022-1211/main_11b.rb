@@ -82,19 +82,19 @@ class Main
   end
 
   def run
-    rounds = 10000
-    #rounds = 20
+    #rounds = 10000
+    rounds = 20
     #rounds = 2
     round = 1
     test = [1, 20] + (1..10).map {|x| x * 1000}
     while round <= rounds do
       @monkeys = run_round(@monkeys)
-      if test.include?(round)
+      #if test.include?(round)
         puts "\nROUND #{round}"
         display_monkeys(@monkeys)
-      else
-        puts round
-      end
+      #else
+        #puts round
+      #end
       round += 1
     end
 
@@ -188,7 +188,7 @@ class Main
     decreasing = counts.sort.reverse
     first = decreasing[0]
     second = decreasing[1]
-    puts first, second
+    #puts first, second
 
     monkey_business = first * second
 

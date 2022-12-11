@@ -49,7 +49,7 @@ function parse_monkeys(lines) {
         if (line_type == STARTING) {
             const items = line.match(/\d+/g);
             //console.log(`items: ${items}`);
-            monkeys[curr_monkey]['items'] = items.map(x => parseInt(x))
+            monkeys[curr_monkey]['items'] = items.map(x => Number(x))
         }
 
         if (line_type == OPERATION) {
@@ -111,14 +111,13 @@ function get_new_level(worry, operand, factor) {
     if (factor == OLD) {
         factor = worry
     }
-    worry = parseInt(worry)
-    factor = parseInt(factor)
+    worry = Number(worry)
+    factor = Number(factor)
 
     if (operand == PLUS) {
         new_worry = worry + factor
         return new_worry
-    } 
-    if (operand == MULTIPLY) {
+    } else if (operand == MULTIPLY) {
         new_worry = worry * factor
         return new_worry
     }
@@ -127,6 +126,7 @@ function get_new_level(worry, operand, factor) {
 }
 
 function assess_worry(worry, test, quotient) {
+    quotient = Number(quotient)
     const result = (worry % quotient) == 0
 
     //console.log(`w[${worry}] q[${quotient}] T/F[${result ? 'T':'F'}]`);
@@ -153,8 +153,9 @@ function run_round(monkeys) {
             const operand = curr_monkey['operand']
             const factor = curr_monkey['factor']
             const inspect_worry = get_new_level(item, operand, factor)
-            const bored_worry = Math.floor(inspect_worry / 3)
-            const final_worry = bored_worry
+            //const bored_worry = Math.floor(inspect_worry / 3)
+            //const final_worry = bored_worry
+            const final_worry = inspect_worry
 
             const test = curr_monkey['test']
             const quotient = curr_monkey['quotient']
@@ -181,14 +182,14 @@ function calculate_monkey_business(monkeys) {
 
     const counts = Object.keys(monkeys).map(key => {
         const count = monkeys[key]['inspect_count']
-        return parseInt(count)
+        return Number(count)
     });
 
     const decreasing = counts.sort((a, b) => a - b).reverse()
-    console.log('decreasing: ' + decreasing);
+    //console.log('decreasing: ' + decreasing);
     const first = decreasing[0]
     const second = decreasing[1]
-    console.log(`1st[${first}] 2nd[${second}]`);
+    //console.log(`1st[${first}] 2nd[${second}]`);
 
     monkey_business = first * second
 
@@ -197,11 +198,14 @@ function calculate_monkey_business(monkeys) {
 
 function run_code(monkeys) {
     //const rounds = 10000
+    //const rounds = 1000
     const rounds = 20
     //const rounds = 2
     let round = 1
 
-    const range = [...Array(10).keys()]
+    const thousands = 10
+    //const thousands = 1
+    const range = [...Array(thousands).keys()]
     const test = [1, 20].concat(range.map(x => (x+1)*1000))
 
     while (round <= rounds) {
