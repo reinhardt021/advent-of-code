@@ -2,7 +2,13 @@ class Main
   MONKEY = 'Monkey'
   STARTING = 'Starting'
   OPERATION = 'Operation:'
+  PLUS = '+'
+  MULTIPLY = '*'
+  OLD = 'old'
+
   TEST = 'Test:'
+  DIVISIBLE = 'divisible'
+
   IF = 'If'
   T = 'true:'
   F = 'false:'
@@ -51,7 +57,7 @@ class Main
         operand = parts[index_operand]
         factor = parts[index_factor]
         monkeys[curr_monkey][:operand] = operand
-        monkeys[curr_monkey][:factor] = factor
+        monkeys[curr_monkey][:factor] = factor.to_i
       end
 
       if line_type == TEST
@@ -76,17 +82,78 @@ class Main
   end
 
   def run
-    rounds = 20
+    #rounds = 20
+    rounds = 2
     round = 1
     while round <= rounds do
+      puts "round #{round}"
       # go through each monkey to inspect and pass things along
-      @monkeys
-
-
+      @monkeys = run_round(@monkeys)
       round += 1
     end
 
     return calculate_monkey_business(@monkeys)
+  end
+
+  def get_new_level(worry, operand, factor)
+    new_worry = 0
+
+    if factor == OLD
+      factor = worry
+    end
+    factor = factor.to_i
+
+    if operand == PLUS
+      new_worry = worry + factor
+    elsif operand == MULTIPLY
+      new_worry = worry * factor
+    end
+    
+    return new_worry
+  end
+
+  def assess_worry(worry, test, quotient)
+    worried = false
+
+    if test == DIVISIBLE
+      worried = (worry % quotient.to_i == 0)
+    end
+
+    return worried 
+  end
+
+  def get_next_monkey(monkeys, worried)
+    next_key = monkeys
+    monkeys
+  end
+
+  def run_round(monkeys)
+    monkeys.keys.each do |key|
+      curr_monkey = monkeys[key]
+      curr_monkey[:items].each do |item|
+        count = curr_monkey[:inspect_count]
+        curr_monkey[:inspect_count] = 1 + count
+        puts "m[#{key}] i[#{item}] count[#{count + 1}]"
+
+        #operand = curr_monkey[:operand]
+        #factor = curr_monkey[:factor]
+        #inspect_worry = get_new_level(item, operand, factor)
+        #bored_worry = (inspect_worry / 3).floor
+
+        #test = curr_monkey[:test]
+        #quotient = curr_monkey[:quotient]
+        #worried = assess_worry(item, test, quotient)
+        #next_key = worried ? :success_monkey : :fail_monkey
+        #monkey_key = curr_monkey[next_key].to_s.to_sym
+
+        #next_monkey = monkeys[monkey_key]
+        #puts "next monkey: " + next_monkey.to_s
+        #next_monkey[:items] << bored_worry
+
+      end
+    end
+    
+    return monkeys
   end
   
   def calculate_monkey_business(monkeys)
