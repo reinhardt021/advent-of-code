@@ -99,9 +99,9 @@ function display_monkeys(monkeys) {
         const curr_monkey = monkeys[key]
         //console.log("curr_monkey: " + JSON.stringify(curr_monkey)); 
         const items = curr_monkey['items']
-        console.log(`Monkey ${key}: ` + items.join(', '));
+        //console.log(`Monkey ${key}: ` + items.join(', '));
         const count = curr_monkey['inspect_count']
-        //console.log(`Monkey ${key}: inspected items ${count} times`);
+        console.log(`Monkey ${key}: inspected items ${count} times`);
     }
 
 }
@@ -161,13 +161,13 @@ function run_round(monkeys) {
             const worried = assess_worry(final_worry, test, quotient)
             const which_monkey = worried ? 'success_monkey' : 'fail_monkey'
             const monkey_key = curr_monkey[which_monkey]
-            console.log(`w[${item}]${operand}${factor} iw[${inspect_worry}] bw[${bored_worry}] >> nm[${monkey_key}]`);
+            //console.log(`w[${item}]${operand}${factor} iw[${inspect_worry}] bw[${bored_worry}] >> nm[${monkey_key}]`);
 
             const next_monkey = monkeys[monkey_key]
             next_monkey['items'].push(final_worry)
             monkeys[monkey_key] = next_monkey
         }
-        console.log("curr_monkey: " + JSON.stringify(curr_monkey)); 
+        //console.log("curr_monkey: " + JSON.stringify(curr_monkey)); 
 
         curr_monkey['items'] = []
         monkeys[key] = curr_monkey
@@ -180,10 +180,11 @@ function calculate_monkey_business(monkeys) {
     let monkey_business = 0
 
     const counts = Object.keys(monkeys).map(key => {
-        return monkeys[key]['inspect_count']
+        const count = monkeys[key]['inspect_count']
+        return parseInt(count)
     });
 
-    const decreasing = counts.sort().reverse()
+    const decreasing = counts.sort((a, b) => a - b).reverse()
     console.log('decreasing: ' + decreasing);
     const first = decreasing[0]
     const second = decreasing[1]
@@ -196,8 +197,8 @@ function calculate_monkey_business(monkeys) {
 
 function run_code(monkeys) {
     //const rounds = 10000
-    //const rounds = 20
-    const rounds = 2
+    const rounds = 20
+    //const rounds = 2
     let round = 1
 
     const range = [...Array(10).keys()]
