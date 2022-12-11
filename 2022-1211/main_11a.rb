@@ -82,23 +82,31 @@ class Main
   end
 
   def run
-    #rounds = 20
-    rounds = 2
+    rounds = 20
+    #rounds = 2
     round = 1
     while round <= rounds do
-      puts "round #{round}"
-      # go through each monkey to inspect and pass things along
+      puts "\nROUND #{round}"
       @monkeys = run_round(@monkeys)
+      display_monkeys(@monkeys)
       round += 1
     end
 
     return calculate_monkey_business(@monkeys)
   end
+  
+  def display_monkeys(monkeys)
+    # for test purposes
+    monkeys.keys.each do |key|
+      curr_monkey = monkeys[key]
+      items = curr_monkey[:items]
+      puts "Monkey #{key}: " + items.join(', ')
+    end
+  end
 
   def get_new_level(worry, operand, factor)
     new_worry = 0
 
-    #puts "factor: " + factor.to_s
     if factor == OLD
       factor = worry
     end
@@ -116,7 +124,6 @@ class Main
   def assess_worry(worry, test, quotient)
     worried = false
 
-    #puts "worry[#{worry}] test[#{test}] quotient[#{quotient}]"
     if test == DIVISIBLE
       worried = (worry % quotient.to_i == 0)
     end
@@ -146,13 +153,15 @@ class Main
         worried = assess_worry(bored_worry, test, quotient)
         which_monkey = worried ? :success_monkey : :fail_monkey
         monkey_key = curr_monkey[which_monkey].to_s.to_sym
-        puts "m[#{key}] i[#{item}] C[#{count + 1}] iw[#{inspect_worry}] bw[#{bored_worry}] >> nm[#{monkey_key}]"
+        #puts "m[#{key}] i[#{item}] C[#{count + 1}] iw[#{inspect_worry}] bw[#{bored_worry}] >> nm[#{monkey_key}]"
 
-        #next_monkey = monkeys[monkey_key]
+        next_monkey = monkeys[monkey_key]
         #puts "next monkey: " + next_monkey.to_s
-        #next_monkey[:items] << bored_worry
+        next_monkey[:items] << bored_worry
+        # remove item from original monkey
 
       end
+      curr_monkey[:items] = []
     end
     
     return monkeys
