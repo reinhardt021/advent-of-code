@@ -22,51 +22,32 @@ function parse_monkeys(lines) {
     index = 0
     while (index < lines.length) {
         const line = lines[index]
-        const parts = line.split(' ')
+        index += 1
 
-        const line_type = parts[0]
-    } 
-
-    return monkeys;
-}
-
-function parse_file(filename) {
-    const file = fs.readFileSync(filename)
-    const lines = file.split("\n")
-    const monkeys = parse_monkeys(lines)
-    //const file  = readline.createInterface({
-        //input: fs.createReadStream(filename),
-        //output: process.stdout,
-        //terminal: false
-    //});
-
-    const monkeys = {};
-    let curr_monkey = undefined;
-
-    file.on('line', line => {
-        console.log('l: '+ line);
-
-        const parts = line.split(' ')
-
+        const parts = line.split(' ').filter(x => x != '');
+        //parts = parts
+        //const parts = line.match(/\S+/)
+        console.log(`parts: ${parts.map(x => `[${x}]`)}`);
         const line_type = parts[0]
         if (line_type == MONKEY) {
             curr_monkey = parts[1].match(/\d+/)[0]
             monkeys[curr_monkey] = {
                 items: [],
-                operand: undefined,
-                factor: undefined,
-                test: undefined,
-                quotient: undefined,
-                success_monkey: undefined,
-                fail_monkey: undefined,
+                operand: '',
+                factor: '',
+                test: '',
+                quotient: '',
+                success_monkey: '',
+                fail_monkey: '',
                 inspect_count: 0,
             }
         }
-
+        
         if (curr_monkey == undefined) {
-            return; // to end loop
+            continue; // to end loop
         }
 
+        console.log(`line_type: ${line_type}`);
         if (line_type == STARTING) {
             const items = line.match(/\d+/);
             monkeys[curr_monkey]['items'] = items.map(x => parseInt(x))
@@ -95,9 +76,16 @@ function parse_file(filename) {
             const success_or_fail = parts[1] == T ? 'success_monkey' : 'fail_monkey' 
             monkeys[curr_monkey][success_or_fail] = monkey
         }
-    });
+    } 
 
     console.log('monkeys: ' + JSON.stringify(monkeys));
+    return monkeys;
+}
+
+function parse_file(filename) {
+    const file = fs.readFileSync(filename, 'UTF-8')
+    const lines = file.split("\n")
+    const monkeys = parse_monkeys(lines)
 
     return monkeys;
 }
