@@ -137,7 +137,19 @@ function assess_worry(worry, test, quotient) {
     return result
 }
 
-function run_round(monkeys) {
+function get_max_quotient(monkeys) {
+    const max_quotient = Object.keys(monkeys).reduce((product, key) => {
+        const quotient = monkeys[key]['quotient']
+        //console.log("quotient: " + quotient);
+        
+        return product * get_int(quotient) 
+    }, 1);
+
+    return max_quotient
+}
+
+
+function run_round(monkeys, max_quotient) {
     let index = 0
     const mkeys = Object.keys(monkeys)
     while (index < mkeys.length) {
@@ -159,14 +171,14 @@ function run_round(monkeys) {
             const inspect_worry = get_new_level(item, operand, factor)
             //const bored_worry = Math.floor(inspect_worry / 3)
             //const final_worry = bored_worry
-            const final_worry = inspect_worry
+            const final_worry = inspect_worry % max_quotient
 
             const test = curr_monkey['test']
             const quotient = curr_monkey['quotient']
             const worried = assess_worry(final_worry, test, quotient)
             const which_monkey = worried ? 'success_monkey' : 'fail_monkey'
             const monkey_key = curr_monkey[which_monkey]
-            //console.log(`w[${item}]${operand}${factor} iw[${inspect_worry}] bw[${bored_worry}] >> nm[${monkey_key}]`);
+            //console.log(`w[${item}]${operand}${factor} iw[${inspect_worry}] >> nm[${monkey_key}]`);
 
             const next_monkey = monkeys[`${monkey_key}`]
             next_monkey['items'].push(final_worry)
@@ -201,9 +213,10 @@ function calculate_monkey_business(monkeys) {
 }
 
 function run_code(monkeys) {
-    //const rounds = 10000
+    const max_quotient = get_max_quotient(monkeys)
+    const rounds = 10000
     //const rounds = 1000
-    const rounds = 20
+    //const rounds = 20
     //const rounds = 2
     let round = 1
 
@@ -213,13 +226,13 @@ function run_code(monkeys) {
     const test = [1, 20].concat(range.map(x => (x+1)*1000))
 
     while (round <= rounds) {
-        monkeys = run_round(monkeys)
-        //if (test.includes(round)) {
+        monkeys = run_round(monkeys, max_quotient)
+        if (test.includes(round)) {
             console.log("\n> ROUND: " + round);
             display_monkeys(monkeys)
-        //} else {
+        } else {
             //console.log("x ROUND: " + round);
-        //}
+        }
         
         round += 1
     } 
@@ -238,17 +251,13 @@ function assertEquals(expected, actual) {
 const aoc_day = 11
 const files = {
   //file => expected result
-    a: 10605, 
-  //b: undefined, // no expected result yet
-  //c: undefined, //13140,
+    a: 2713310158, 
+    b: 1, // no expected result yet
+  //c: 0, //13140,
 }
 
-const fileKeys = Object.keys(files)
-let index = 0
-while (index < fileKeys.length) {
-    const file = fileKeys[index]
-    index += 1
-
+Object.keys(files).forEach(file => {
+    //const file = fileKeys[index]
     const exp = files[file]
 
     const filename = `input_${aoc_day}${file}.txt`
@@ -258,4 +267,20 @@ while (index < fileKeys.length) {
     if (exp) {
         assertEquals(exp, results)
     }
-}
+});
+//const fileKeys = Object.keys(files)
+//let index = 0
+//while (index < fileKeys.length) {
+    //const file = fileKeys[index]
+    //index += 1
+
+    //const exp = files[file]
+
+    //const filename = `input_${aoc_day}${file}.txt`
+    //const data = parse_file(filename)
+    //const results = run_code(data)
+    //console.log("results: " + results)
+    //if (exp) {
+        //assertEquals(exp, results)
+    //}
+//}

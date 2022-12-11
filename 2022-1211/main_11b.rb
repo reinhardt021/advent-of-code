@@ -81,20 +81,32 @@ class Main
     return monkeys
   end
 
+  def get_max_quotient(monkeys)
+    max_quotient = monkeys.keys.reduce(1) do |product, key|
+      quotient = monkeys[key][:quotient]
+      puts "quotient[#{quotient}]"
+      product * quotient.to_i
+    end
+    puts "max_quotient[#{max_quotient}]"
+    
+    return max_quotient
+  end
+  
   def run
-    #rounds = 10000
-    rounds = 20
+    max_quotient = get_max_quotient(@monkeys)
+    rounds = 10000
+    #rounds = 20
     #rounds = 2
     round = 1
     test = [1, 20] + (1..10).map {|x| x * 1000}
     while round <= rounds do
-      @monkeys = run_round(@monkeys)
-      #if test.include?(round)
+      @monkeys = run_round(@monkeys, max_quotient)
+      if test.include?(round)
         puts "\nROUND #{round}"
         display_monkeys(@monkeys)
-      #else
+      else
         #puts round
-      #end
+      end
       round += 1
     end
 
@@ -137,7 +149,7 @@ class Main
     return worried 
   end
 
-  def run_round(monkeys)
+  def run_round(monkeys, max_quotient)
     index = 0
     mkeys = monkeys.keys
     while index < mkeys.length
@@ -159,13 +171,14 @@ class Main
         inspect_worry = get_new_level(item, operand, factor)
         #bored_worry = (inspect_worry / 3).floor
         #final_worry = bored_worry
-        final_worry = inspect_worry
+        final_worry = inspect_worry % max_quotient
 
         test = curr_monkey[:test]
         quotient = curr_monkey[:quotient]
         worried = assess_worry(final_worry, test, quotient)
         which_monkey = worried ? :success_monkey : :fail_monkey
         monkey_key = curr_monkey[which_monkey].to_s.to_sym
+        #puts "w[#{item}]#{operand}#{factor} iw[#{inspect_worry}] >> nm[#{monkey_key}]"
 
         next_monkey = monkeys[monkey_key]
         next_monkey[:items] << final_worry
@@ -210,8 +223,8 @@ end
 aoc_day = 11
 files = {
   #file => expected result
-  'a' => 10605, 
-  #'b' => nil, # no expected result yet
+  'a' => 2713310158, 
+  'b' => nil, # no expected result yet
   #'c' => nil, #13140,
 }
 
