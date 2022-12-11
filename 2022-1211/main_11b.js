@@ -47,7 +47,8 @@ function parse_monkeys(lines) {
 
         console.log(`line_type: ${line_type}`);
         if (line_type == STARTING) {
-            const items = line.match(/\d+/);
+            const items = line.match(/\d+/g);
+            console.log(`items: ${items}`);
             monkeys[curr_monkey]['items'] = items.map(x => parseInt(x))
         }
 
