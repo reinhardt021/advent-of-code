@@ -20,7 +20,6 @@ class Main
     data.each do |line|
       parts = line.split(' ')
       items = parts.map {|x|  "[#{x}]"}
-      puts items.join('')
 
       line_type = parts[0]
       if line_type == MONKEY
@@ -33,6 +32,7 @@ class Main
           quotient: nil,
           success_monkey: nil,
           fail_monkey: nil,
+          inspect_count: 0,
         }
       end
 
@@ -42,7 +42,6 @@ class Main
 
       if line_type == STARTING
         items = line.scan(/\d+/)
-        #puts "items: #{items.map {|x| x.to_i}}"
         monkeys[curr_monkey][:items] = items.map {|x| x.to_i}
       end
 
@@ -51,7 +50,6 @@ class Main
         index_factor = 5
         operand = parts[index_operand]
         factor = parts[index_factor]
-        #puts "operand[#{operand}] factor[#{factor}]"
         monkeys[curr_monkey][:operand] = operand
         monkeys[curr_monkey][:factor] = factor
       end
@@ -67,7 +65,6 @@ class Main
 
       if line_type == IF 
         monkey = line.scan(/\d+/).first.to_i
-        #puts "MONKEY FOUND: " + monkey.to_s
         success_or_fail = parts[1] == T ? :success_monkey : :fail_monkey
         monkeys[curr_monkey][success_or_fail] = monkey
       end
@@ -79,6 +76,38 @@ class Main
   end
 
   def run
+    rounds = 20
+    round = 1
+    while round <= rounds do
+      # go through each monkey to inspect and pass things along
+      @monkeys
+
+
+      round += 1
+    end
+
+    return calculate_monkey_business(@monkeys)
+  end
+  
+  def calculate_monkey_business(monkeys)
+    monkey_business = 0
+
+    # find the largest two of the counts
+    #   create an array of the counts
+    #   sort from largest to smallest
+    # multiply the two largest together
+    counts = monkeys.keys.map do |key|
+      monkeys[key][:inspect_count]
+    end
+    #counts = [101, 95, 7, 105]
+    decreasing = counts.sort.reverse
+    first = decreasing[0]
+    second = decreasing[1]
+    puts first, second
+
+    monkey_business = first * second
+
+    return monkey_business
   end
 
 end
