@@ -57,7 +57,7 @@ class Main
         operand = parts[index_operand]
         factor = parts[index_factor]
         monkeys[curr_monkey][:operand] = operand
-        monkeys[curr_monkey][:factor] = factor.to_i
+        monkeys[curr_monkey][:factor] = factor
       end
 
       if line_type == TEST
@@ -98,6 +98,7 @@ class Main
   def get_new_level(worry, operand, factor)
     new_worry = 0
 
+    #puts "factor: " + factor.to_s
     if factor == OLD
       factor = worry
     end
@@ -115,6 +116,7 @@ class Main
   def assess_worry(worry, test, quotient)
     worried = false
 
+    #puts "worry[#{worry}] test[#{test}] quotient[#{quotient}]"
     if test == DIVISIBLE
       worried = (worry % quotient.to_i == 0)
     end
@@ -133,18 +135,18 @@ class Main
       curr_monkey[:items].each do |item|
         count = curr_monkey[:inspect_count]
         curr_monkey[:inspect_count] = 1 + count
-        puts "m[#{key}] i[#{item}] count[#{count + 1}]"
 
-        #operand = curr_monkey[:operand]
-        #factor = curr_monkey[:factor]
-        #inspect_worry = get_new_level(item, operand, factor)
-        #bored_worry = (inspect_worry / 3).floor
+        operand = curr_monkey[:operand]
+        factor = curr_monkey[:factor]
+        inspect_worry = get_new_level(item, operand, factor)
+        bored_worry = (inspect_worry / 3).floor
 
-        #test = curr_monkey[:test]
-        #quotient = curr_monkey[:quotient]
-        #worried = assess_worry(item, test, quotient)
-        #next_key = worried ? :success_monkey : :fail_monkey
-        #monkey_key = curr_monkey[next_key].to_s.to_sym
+        test = curr_monkey[:test]
+        quotient = curr_monkey[:quotient]
+        worried = assess_worry(bored_worry, test, quotient)
+        which_monkey = worried ? :success_monkey : :fail_monkey
+        monkey_key = curr_monkey[which_monkey].to_s.to_sym
+        puts "m[#{key}] i[#{item}] C[#{count + 1}] iw[#{inspect_worry}] bw[#{bored_worry}] >> nm[#{monkey_key}]"
 
         #next_monkey = monkeys[monkey_key]
         #puts "next monkey: " + next_monkey.to_s
