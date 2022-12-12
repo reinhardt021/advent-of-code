@@ -121,8 +121,9 @@ class Main
   end
 
   def check_next(hmap, curr_point, curr_path, direction)
+    dir = NEXT_DIR[direction]
     if at_edge(curr_point, direction, hmap[:row_count], hmap[:col_count]) 
-      #puts "at edge"
+      puts "#{curr_point.to_s} [#{dir}] EDGE"
       return false
     end
 
@@ -136,22 +137,25 @@ class Main
     new_point = get_point(new_x, new_y, new_height)
     #puts "y[#{new_y}] x[#{new_x}] h[#{new_height}]"
     if new_height == E_MARK && get_diff(curr_height, E_HEIGHT) < 2
-      #puts "at end"
+      puts "#{curr_point.to_s} [#{dir}] END"
       return new_point
     end
 
     new_key = get_key(new_point)
     if curr_path.include?(new_key)
       # prevent from going to a path already taken
+      puts "#{curr_point.to_s} [#{dir}] DUPE #{new_point.to_s}"
       #puts "already been there #{new_key}"
       return false
     end
 
     if get_diff(curr_height, new_height) < 2
+      puts "#{curr_point.to_s} [#{dir}] GOOD #{new_point.to_s}"
       #puts "good to go"
       return new_point
     end
 
+    puts "#{curr_point.to_s} [#{dir}] HIGH #{new_point.to_s}"
     #puts "all too large"
     return false
   end
