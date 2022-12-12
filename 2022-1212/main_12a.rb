@@ -116,7 +116,7 @@ class Main
 
   def check_next(hmap, curr_point, curr_path, direction)
     if at_edge(curr_point, direction, hmap[:row_count], hmap[:col_count]) 
-      puts "at edge"
+      #puts "at edge"
       return false
     end
     curr_x = curr_point[:x]
@@ -129,42 +129,34 @@ class Main
     new_point = get_point(new_x, new_y, new_height)
     #puts "y[#{new_y}] x[#{new_x}] h[#{new_height}]"
     if new_height == E_MARK && get_diff(curr_height, E_HEIGHT) < 2
-      puts "at end"
+      #puts "at end"
       return new_point
     end
 
     new_key = get_key(new_point)
     if curr_path.include?(new_key)
       # prevent from going to a path already taken
-      puts "already been there #{new_key}"
+      #puts "already been there #{new_key}"
       return false
     end
 
     if get_diff(curr_height, new_height) < 2
-      puts "good to go"
+      #puts "good to go"
       return new_point
     end
 
-    puts "all too large"
+    #puts "all too large"
     return false
   end
 
   def get_paths(hmap, curr_point, curr_path)
-    # go from starting point
-    #   check if at edge && if not more than one higher
-    # check if can go left
     [LEFT, UP, RIGHT, DOWN].each do |dir|
       next_point = check_next(hmap, curr_point, curr_path, dir)
       puts "go #{dir}? [#{next_point}]"
-    end
-    # check if can top
-    # check if can right
-    # check if can down
-    #   go deeper
-    #   get array of sub paths
+      # recursive call to get array of sub paths
     #     filter if not contain endpoint
     #     map to concat to curr point and return
-    #
+    end
     # if none then return empty array
     #
     # break if reach end point then return last point in array
@@ -173,8 +165,6 @@ class Main
   end
 
   def run
-    # go throught the height map to find the the different paths
-    # recursively
     start_point = @height_map[:start]
     curr_path = [get_key(start_point)]
     paths = get_paths(@height_map, start_point, curr_path)
