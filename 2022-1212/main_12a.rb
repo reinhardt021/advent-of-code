@@ -236,16 +236,26 @@ class Main
     paths = get_paths(@height_map, start_point, curr_path, dir_path)
 
     puts "\n PATHS: "
-    paths.map do |path|
+    upper_bound = @height_map[:row_count] * @height_map[:col_count]
+    path_lengths = []
+    paths.each do |path|
+      if path.length > upper_bound
+        next
+      end
+
+      upper_bound = path.length
       puts "P[#{path.length}] #{path.join(',')}"
+
+      path_lengths << path.length
     end
 
-    paths = [
-      ['0-0', '0-1', '1-1'],
-      ['0-0', '1-0', '1-1', '2-1', '2-2'],
-    ]
+    #paths = [
+      #['0-0', '0-1', '1-1'],
+      #['0-0', '1-0', '1-1', '2-1', '2-2'],
+    #]
 
-    return get_shortest_path(paths)
+    #return get_shortest_path(paths)
+    return path_lengths.sort.first - 1
   end
 
 end
