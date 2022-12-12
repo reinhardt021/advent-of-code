@@ -2,6 +2,10 @@ class Main
   S_MARK = 'S'
   E_MARK = 'E'
 
+  def get_key(x, y)
+    return "#{y}-#{x}"
+  end
+  
   def parse_map(lines)
     height_map = {
       start: nil,
@@ -13,7 +17,6 @@ class Main
     y_index = 0
     while y_index < lines.length
       line = lines[y_index]
-      y_index += 1
 
       row = line.split("") 
       height_map[:col_count] = row.length if height_map[:col_count] < 1
@@ -23,15 +26,17 @@ class Main
 
       if start_x
         puts "found starting y[#{y_index}] x[#{start_x}]"
-        height_map[:start] = "#{y_index}-#{start_x}"
+        height_map[:start] = get_key(start_x, y_index)
       end
 
       if end_x
         puts "found ending y[#{y_index}] x[#{end_x}]"
-        height_map[:end] = "#{y_index}-#{end_x}"
+        height_map[:end] = get_key(end_x, y_index)
+        #height_map[:end] = "#{y_index}-#{end_x}"
       end
 
       height_map[:elevations] << row
+      y_index += 1
     end
 
     return height_map
@@ -42,25 +47,6 @@ class Main
     lines = file.read.split("\n")
     @height_map = parse_map(lines)
     puts "height map: #{@height_map.to_s}"
-    #@height_map = lines.reduce(empty_map) do |map, line, index| 
-      #row = line.split("") 
-      #start_point = row.index(S_MARK)
-      #end_point = row.index(E_MARK)
-
-      #if start_point
-        #puts "found starting y[#{index}] x[#{start_point}]"
-      #end
-
-      #if end_point
-        #puts "found ending y[#{index}] x[#{end_point}]"
-      #end
-
-      #map[:start] = start_point
-      #map[:end] = end_point
-      #map[:elevations] << row
-
-      #map
-    #end
   end
   
   def get_shortest_path(paths)
