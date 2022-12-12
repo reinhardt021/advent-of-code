@@ -1,6 +1,16 @@
 class Main
   S_MARK = 'S'
   E_MARK = 'E'
+  S_HEIGHT = 'a'
+  E_HEIGHT = 'z'
+  LEFT = :left
+  RIGHT = :right
+  UP = :up
+  DOWN = :down
+
+  def get_key(point)
+    return "#{point[:y]}-#{point[:x]}"
+  end
 
   def get_point(x, y, height)
     #return "#{y}-#{x}"
@@ -32,12 +42,12 @@ class Main
 
       if start_x
         #puts "found starting y[#{y_index}] x[#{start_x}]"
-        height_map[:start] = get_point(start_x, y_index, 'a')
+        height_map[:start] = get_point(start_x, y_index, S_HEIGHT)
       end
 
       if end_x
         #puts "found ending y[#{y_index}] x[#{end_x}]"
-        height_map[:end] = get_point(end_x, y_index, 'z')
+        height_map[:end] = get_point(end_x, y_index, E_HEIGHT)
       end
 
       height_map[:elevations] << row
@@ -61,27 +71,92 @@ class Main
     return fewest_steps
   end
 
-  def can_go_left(height_map, start_point)
-    #puts "a < b [#{'z' < 'r'}]" #// test to see chars compare works
-    if start_point[:x] == 0 
+  def get_diff(curr_height, next_height)
+    return next_height.ord - curr_height.ord
+  end
+
+  def at_edge(curr_point, direction, row_count, col_count)
+    is_edge = nil
+    curr_x = curr_point[:x]
+    curr_y = curr_point[:y]
+    if direction == :left
+      is_edge = (curr_x == 0)
+    elsif direction == :up
+      is_edge = (curr_y == 0)
+    elsif direction == :right
+      is_edge = (curr_x == (col_count - 1)) 
+    elsif direction == :down
+      is_edge = (curr_y == (row_count - 1))
+    end
+
+    return is_edge
+  end
+
+  def get_new_x(curr_x, direction)
+    new_x = curr_x
+    if direction == LEFT
+      new_x = curr_x - 1
+    elsif direction == RIGHT
+      new_x = curr_x + 1
+    end
+
+    return new_x
+  end
+
+  def get_new_y(curr_y, direction)
+    new_y = curr_y
+    if direction == UP
+      new_y = curr_y - 1
+    elsif direction == DOWN
+      new_y = curr_y + 1
+    end
+
+    return new_y
+  end
+
+  def check_next(hmap, curr_point, curr_path, direction)
+    if at_edge(curr_point, direction, hmap[:row_count], hmap[:col_count]) 
+      puts "at edge"
+      return false
+    end
+    curr_x = curr_point[:x]
+    curr_y = curr_point[:y]
+    curr_height = curr_point[:height]
+
+    new_x = get_new_x(curr_x, direction)
+    new_y = get_new_y(curr_y, direction)
+    new_height = hmap[:elevations][new_y][new_x]
+    new_point = get_point(new_x, new_y, new_height)
+    #puts "y[#{new_y}] x[#{new_x}] h[#{new_height}]"
+    if new_height == E_MARK && get_diff(curr_height, E_HEIGHT) < 2
+      puts "at end"
+      return new_point
+    end
+
+    new_key = get_key(new_point)
+    if curr_path.include?(new_key)
+      # prevent from going to a path already taken
+      puts "already been there #{new_key}"
       return false
     end
 
-    new_x = start_point[:x] - 1
-    new_y = start_point[:y]
-    # get value at that next point
-    new_elevation = height_map[:elevations][new_y][new_x]
-    puts "y[#{new_y}] x[#{new_x}] e[#{new_elevation}]"
+    if get_diff(curr_height, new_height) < 2
+      puts "good to go"
+      return new_point
+    end
 
-    #if new_elevation
-
+    puts "all too large"
+    return false
   end
 
-  def get_paths(height_map, start_point)
+  def get_paths(hmap, curr_point, curr_path)
     # go from starting point
     #   check if at edge && if not more than one higher
     # check if can go left
-     go_left = can_go_left(height_map, start_point)
+    [LEFT, UP, RIGHT, DOWN].each do |dir|
+      next_point = check_next(hmap, curr_point, curr_path, dir)
+      puts "go #{dir}? [#{next_point}]"
+    end
     # check if can top
     # check if can right
     # check if can down
@@ -100,7 +175,9 @@ class Main
   def run
     # go throught the height map to find the the different paths
     # recursively
-    paths = get_paths(@height_map, @height_map[:start])
+    start_point = @height_map[:start]
+    curr_path = [get_key(start_point)]
+    paths = get_paths(@height_map, start_point, curr_path)
 
     paths = [
       ['0-0', '0-1', '1-1'],
