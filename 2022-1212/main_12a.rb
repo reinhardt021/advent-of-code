@@ -81,6 +81,10 @@ class Main
     return next_height.ord - curr_height.ord
   end
 
+  def can_reach(curr_height, next_height)
+    return get_diff(curr_height, next_height) < 2
+  end
+
   def at_edge(curr_point, direction, row_count, col_count)
     is_edge = nil
     curr_x = curr_point[:x]
@@ -123,7 +127,7 @@ class Main
   def check_next(hmap, curr_point, curr_path, direction)
     dir = NEXT_DIR[direction]
     if at_edge(curr_point, direction, hmap[:row_count], hmap[:col_count]) 
-      puts "#{curr_point.to_s} [#{dir}] EDGE"
+      #puts "#{curr_point.to_s} [#{dir}] EDGE"
       return false
     end
 
@@ -136,61 +140,88 @@ class Main
     new_height = hmap[:elevations][new_y][new_x]
     new_point = get_point(new_x, new_y, new_height)
     #puts "y[#{new_y}] x[#{new_x}] h[#{new_height}]"
-    if new_height == E_MARK && get_diff(curr_height, E_HEIGHT) < 2
-      puts "#{curr_point.to_s} [#{dir}] END"
+    if new_height == E_MARK && can_reach(curr_height, E_HEIGHT)
+      puts "#{curr_point.to_s} [#{dir}] END XXXXX"
       return new_point
     end
 
     new_key = get_key(new_point)
     if curr_path.include?(new_key)
       # prevent from going to a path already taken
-      puts "#{curr_point.to_s} [#{dir}] DUPE #{new_point.to_s}"
+      my_path = curr_path.join(',')
+      #puts "#{curr_point.to_s} [#{dir}] DUPE #{new_point.to_s} [#{curr_path.length}]#{my_path}"
       #puts "already been there #{new_key}"
       return false
     end
 
-    if get_diff(curr_height, new_height) < 2
+    if new_height != E_MARK && can_reach(curr_height, new_height)
       puts "#{curr_point.to_s} [#{dir}] GOOD #{new_point.to_s}"
       #puts "good to go"
       return new_point
     end
 
-    puts "#{curr_point.to_s} [#{dir}] HIGH #{new_point.to_s}"
+    #puts "#{curr_point.to_s} [#{dir}] HIGH #{new_point.to_s}"
     #puts "all too large"
     return false
   end
 
   def at_end(curr_point, end_point)
-    return curr_point[:x] == end_point[:x] && curr_point[:y] == end_point[:y]
+    return get_key(curr_point) == get_key(end_point)
+    #return curr_point[:x] == end_point[:x] && curr_point[:y] == end_point[:y]
   end
 
   def get_paths(hmap, curr_point, curr_path, dir_path)
-    paths = []
-    if at_end(curr_point, hmap[:end])
-      # break if reach end point then return last point in array
-      return false
+    paths = [] # will store here 
+    curr_path << get_key(curr_point)
+    paths << curr_path
+
+    upper_bound = hmap[:row_count] * hmap[:col_count]
+    #puts "======[#{upper_bound}] MAX"
+    if curr_path.length >= upper_bound
+      # stop if path is longer than col*rows
+      return paths
     end
 
+    if at_end(curr_point, hmap[:end])
+      # break if reach end point then return last point in array
+      return paths
+    end
+
+
+    next_paths = []
     [LEFT, UP, RIGHT, DOWN].each do |dir|
       next_point = check_next(hmap, curr_point, curr_path, dir)
-      #puts "go #{dir}? [#{next_point}]"
-      if next_point
-        ext_path = curr_path
-        ext_path << get_key(next_point)
-        dir_path << NEXT_DIR[dir]
-        #puts "ext_path: #{ext_path.to_s}"
-        puts "dir_path[#{dir_path.length}] #{dir_path.join("")}"
-        next_paths = get_paths(hmap, next_point, ext_path, dir_path)
-        
-        #if next_paths
-        #end
-        # loop throught next paths and attach to array to pass up 
-        #if ext_path.include?()
-
-        # recursive call to get array of sub paths
-        #     filter if not contain endpoint
-        #     map to concat to curr point and return
+      if !next_point
+        next
       end
+
+      ext_path = curr_path.clone
+      #ext_path << get_key(next_point)
+      directions = dir_path.clone
+      directions << NEXT_DIR[dir]
+
+      puts "ext_path[#{ext_path.length}] #{ext_path.join(",")}"
+      puts "dir_path[#{directions.length}] #{directions.join("")}"
+      ext_paths = get_paths(hmap, next_point, ext_path, directions)
+      ext_paths.map do |path|
+        if path.include?(get_key(hmap[:end]))
+          next_paths << path
+        end
+      end
+      
+      # loop through next paths and attach to array to pass up 
+      #if ext_path.include?()
+
+      # recursive call to get array of sub paths
+      #     filter if not contain endpoint
+      #     map to concat to curr point and return
+    end
+
+    if next_paths.length > 0
+      # just replace the array since they have full paths
+      paths = next_paths 
+      # if reached end then store path
+      # if no end then don't store
     end
     
    
@@ -199,9 +230,15 @@ class Main
 
   def run
     start_point = @height_map[:start]
-    curr_path = [get_key(start_point)]
+    #curr_path = [get_key(start_point)]
+    curr_path = []
     dir_path = []
     paths = get_paths(@height_map, start_point, curr_path, dir_path)
+
+    puts "\n PATHS: "
+    paths.map do |path|
+      puts "P[#{path.length}] #{path.join(',')}"
+    end
 
     paths = [
       ['0-0', '0-1', '1-1'],
