@@ -7,6 +7,12 @@ class Main
   RIGHT = :right
   UP = :up
   DOWN = :down
+  NEXT_DIR = {
+    left: '<',
+    right: '>',
+    up: '^',
+    down: 'v',
+  }
 
   def get_key(point)
     return "#{point[:y]}-#{point[:x]}"
@@ -16,8 +22,8 @@ class Main
     #return "#{y}-#{x}"
 
     return {
-      x: x,
       y: y,
+      x: x,
       height: height,
     }
   end
@@ -61,7 +67,7 @@ class Main
     file = File.open(filename)
     lines = file.read.split("\n")
     @height_map = parse_map(lines)
-    puts "height map: #{@height_map.to_s}"
+    #puts "height map: #{@height_map.to_s}"
   end
   
   def get_shortest_path(paths)
@@ -119,6 +125,7 @@ class Main
       #puts "at edge"
       return false
     end
+
     curr_x = curr_point[:x]
     curr_y = curr_point[:y]
     curr_height = curr_point[:height]
@@ -149,25 +156,48 @@ class Main
     return false
   end
 
-  def get_paths(hmap, curr_point, curr_path)
+  def at_end(curr_point, end_point)
+    return curr_point[:x] == end_point[:x] && curr_point[:y] == end_point[:y]
+  end
+
+  def get_paths(hmap, curr_point, curr_path, dir_path)
+    paths = []
+    if at_end(curr_point, hmap[:end])
+      # break if reach end point then return last point in array
+      return false
+    end
+
     [LEFT, UP, RIGHT, DOWN].each do |dir|
       next_point = check_next(hmap, curr_point, curr_path, dir)
-      puts "go #{dir}? [#{next_point}]"
-      # recursive call to get array of sub paths
-    #     filter if not contain endpoint
-    #     map to concat to curr point and return
+      #puts "go #{dir}? [#{next_point}]"
+      if next_point
+        ext_path = curr_path
+        ext_path << get_key(next_point)
+        dir_path << NEXT_DIR[dir]
+        #puts "ext_path: #{ext_path.to_s}"
+        puts "dir_path[#{dir_path.length}] #{dir_path.join("")}"
+        next_paths = get_paths(hmap, next_point, ext_path, dir_path)
+        
+        #if next_paths
+        #end
+        # loop throught next paths and attach to array to pass up 
+        #if ext_path.include?()
+
+        # recursive call to get array of sub paths
+        #     filter if not contain endpoint
+        #     map to concat to curr point and return
+      end
     end
-    # if none then return empty array
-    #
-    # break if reach end point then return last point in array
-    #
-    # if after 
+    
+   
+    return paths
   end
 
   def run
     start_point = @height_map[:start]
     curr_path = [get_key(start_point)]
-    paths = get_paths(@height_map, start_point, curr_path)
+    dir_path = []
+    paths = get_paths(@height_map, start_point, curr_path, dir_path)
 
     paths = [
       ['0-0', '0-1', '1-1'],
