@@ -35,13 +35,18 @@ class Main
       row_count: lines.length,
       col_count: 0,
       elevations: [],
+      min_steps: nil,
+      dead_ends: [],
     }
     y_index = 0
     while y_index < lines.length
       line = lines[y_index]
 
       row = line.split("") 
-      height_map[:col_count] = row.length if height_map[:col_count] < 1
+      if height_map[:col_count] < 1
+        height_map[:col_count] = row.length
+        height_map[:min_steps] = row.length * lines.length
+      end
 
       start_x = row.index(S_MARK)
       end_x = row.index(E_MARK)
@@ -139,46 +144,47 @@ class Main
     new_y = get_new_y(curr_y, direction)
     new_height = hmap[:elevations][new_y][new_x]
     new_point = get_point(new_x, new_y, new_height)
-    #puts "y[#{new_y}] x[#{new_x}] h[#{new_height}]"
     if new_height == E_MARK && can_reach(curr_height, E_HEIGHT)
-      puts "#{curr_point.to_s} [#{dir}] END XXXXX"
+      #puts "#{curr_point.to_s} [#{dir}] END XXXXX"
       return new_point
     end
 
     new_key = get_key(new_point)
     if curr_path.include?(new_key)
-      # prevent from going to a path already taken
       my_path = curr_path.join(',')
       #puts "#{curr_point.to_s} [#{dir}] DUPE #{new_point.to_s} [#{curr_path.length}]#{my_path}"
-      #puts "already been there #{new_key}"
+      return false
+    end
+
+    if hmap[:dead_ends].include?(new_key)
+      puts "#{curr_point.to_s} [#{dir}] DEAD #{new_point.to_s}"
       return false
     end
 
     if new_height != E_MARK && can_reach(curr_height, new_height)
-      puts "#{curr_point.to_s} [#{dir}] GOOD #{new_point.to_s}"
-      #puts "good to go"
+      #puts "#{curr_point.to_s} [#{dir}] GOOD #{new_point.to_s}"
       return new_point
     end
 
     #puts "#{curr_point.to_s} [#{dir}] HIGH #{new_point.to_s}"
-    #puts "all too large"
     return false
   end
 
   def at_end(curr_point, end_point)
     return get_key(curr_point) == get_key(end_point)
-    #return curr_point[:x] == end_point[:x] && curr_point[:y] == end_point[:y]
   end
 
   def get_paths(hmap, curr_point, curr_path, dir_path)
     paths = [] # will store here 
-    curr_path << get_key(curr_point)
+    curr_key = get_key(curr_point)
+    curr_path << curr_key
     paths << curr_path
 
-    upper_bound = hmap[:row_count] * hmap[:col_count]
+    #puts "htmap: #{hmap}"
+    upper_bound = hmap[:min_steps]
     #puts "======[#{upper_bound}] MAX"
     if curr_path.length >= upper_bound
-      # stop if path is longer than col*rows
+      # stop if path is longer than upper_bound
       return paths
     end
 
@@ -186,7 +192,6 @@ class Main
       # break if reach end point then return last point in array
       return paths
     end
-
 
     next_paths = []
     [LEFT, UP, RIGHT, DOWN].each do |dir|
@@ -196,46 +201,45 @@ class Main
       end
 
       ext_path = curr_path.clone
-      #ext_path << get_key(next_point)
       directions = dir_path.clone
       directions << NEXT_DIR[dir]
 
       puts "ext_path[#{ext_path.length}] #{ext_path.join(",")}"
       puts "dir_path[#{directions.length}] #{directions.join("")}"
       ext_paths = get_paths(hmap, next_point, ext_path, directions)
-      ext_paths.map do |path|
-        if path.include?(get_key(hmap[:end]))
-          next_paths << path
+
+      ext_paths.each do |path|
+        if !path.include?(get_key(hmap[:end]))
+          next
+        end
+        # only add to list of paths if has the end point
+        next_paths << path
+
+        if path.length < hmap[:min_steps]
+          hmap[:min_steps] = path.length
         end
       end
       
-      # loop through next paths and attach to array to pass up 
-      #if ext_path.include?()
-
-      # recursive call to get array of sub paths
-      #     filter if not contain endpoint
-      #     map to concat to curr point and return
     end
 
     if next_paths.length > 0
       # just replace the array since they have full paths
       paths = next_paths 
-      # if reached end then store path
-      # if no end then don't store
+    else 
+      # help to avoid this path later
+      #hmap[:dead_ends] << curr_key
     end
-    
    
     return paths
   end
 
   def run
     start_point = @height_map[:start]
-    #curr_path = [get_key(start_point)]
     curr_path = []
     dir_path = []
     paths = get_paths(@height_map, start_point, curr_path, dir_path)
 
-    puts "\n PATHS: "
+    puts "\nPATHS: "
     upper_bound = @height_map[:row_count] * @height_map[:col_count]
     path_lengths = []
     paths.each do |path|
@@ -249,6 +253,7 @@ class Main
       path_lengths << path.length
     end
 
+    puts "hmap: #{@height_map}"
     #paths = [
       #['0-0', '0-1', '1-1'],
       #['0-0', '1-0', '1-1', '2-1', '2-2'],
