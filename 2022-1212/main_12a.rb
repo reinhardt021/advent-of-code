@@ -18,47 +18,50 @@ class Main
     return "#{point[:y]}-#{point[:x]}"
   end
 
-  def get_point(x, y, height)
+  def get_point(x, y, height, seen = false)
     return {
       y: y,
       x: x,
       height: height,
+      seen: seen,
     }
   end
   
   def parse_map(lines)
-    height_map = {
+    h_map = {
       start: nil,
       end: nil,
       row_count: lines.length,
       col_count: 0,
       elevations: [],
+      grid: [],
       min_steps: nil,
       dead_ends: [],
     }
-    y_index = 0
-    while y_index < lines.length
-      line = lines[y_index]
+    y = 0
+    while y < lines.length
+      line = lines[y]
 
       row = line.split("") 
-      if height_map[:col_count] < 1
-        height_map[:col_count] = row.length
-        height_map[:min_steps] = row.length * lines.length
+      if h_map[:col_count] < 1
+        h_map[:col_count] = row.length
+        h_map[:min_steps] = row.length * lines.length
       end
 
-      if height_map[:start] == nil && start_x = row.index(S_MARK)
-        height_map[:start] = get_point(start_x, y_index, S_HEIGHT)
+      if h_map[:start] == nil && start_x = row.index(S_MARK)
+        h_map[:start] = get_point(start_x, y, S_HEIGHT)
       end
 
-      if height_map[:end] == nil && end_x = row.index(E_MARK)
-        height_map[:end] = get_point(end_x, y_index, E_HEIGHT)
+      if h_map[:end] == nil && end_x = row.index(E_MARK)
+        h_map[:end] = get_point(end_x, y, E_HEIGHT)
       end
 
-      height_map[:elevations] << row
-      y_index += 1
+      h_map[:elevations] << row
+      h_map[:grid] << row.map.with_index {|h, x| get_point(x, y, h) }
+      y += 1
     end
 
-    return height_map
+    return h_map
   end
 
   def initialize(filename)
@@ -107,17 +110,16 @@ class Main
 
   def check_next(hmap, curr_point, curr_path, direction)
     dir = NEXT_DIR[direction]
+
     if at_edge(curr_point, direction, hmap[:row_count], hmap[:col_count]) 
       #puts "#{curr_point.to_s} [#{dir}] EDGE"
       return false
     end
 
-    curr_x = curr_point[:x]
-    curr_y = curr_point[:y]
     curr_height = curr_point[:height]
 
-    new_x = get_new_x(curr_x, direction)
-    new_y = get_new_y(curr_y, direction)
+    new_x = get_new_x(curr_point[:x], direction)
+    new_y = get_new_y(curr_point[:y], direction)
     new_height = hmap[:elevations][new_y][new_x]
     new_point = get_point(new_x, new_y, new_height)
     if new_height == E_MARK && can_reach(curr_height, E_HEIGHT)
@@ -132,14 +134,16 @@ class Main
       return false
     end
 
-    if hmap[:dead_ends].include?(new_key)
-      puts "#{curr_point.to_s} [#{dir}] DEAD #{new_point.to_s}"
-      return false
-    end
 
     if new_height != E_MARK && can_reach(curr_height, new_height)
       #puts "#{curr_point.to_s} [#{dir}] GOOD #{new_point.to_s}"
-      return new_point
+      #return new_point
+      if hmap[:dead_ends].include?(new_key)
+        puts "#{curr_point.to_s} [#{dir}] DEAD #{new_point.to_s}"
+        return false
+      else
+        return new_point
+      end
     end
 
     #puts "#{curr_point.to_s} [#{dir}] HIGH #{new_point.to_s}"
@@ -180,14 +184,14 @@ class Main
       directions = dir_path.clone
       directions << NEXT_DIR[dir]
 
-      puts "ext_path[#{ext_path.length}] #{ext_path.join(",")}"
-      puts "dir_path[#{directions.length}] #{directions.join("")}"
+      puts "D[#{directions.length}] #{directions.join("")}"
       ext_paths = get_paths(hmap, next_point, ext_path, directions)
 
       ext_paths.each do |path|
         if !path.include?(get_key(hmap[:end]))
           next
         end
+        puts "X[#{path.length}] #{path.join(",")}"
         # only add to list of paths if has the end point
         next_paths << path
 
@@ -203,6 +207,8 @@ class Main
       paths = next_paths 
     else 
       # help to avoid this path later
+      #puts "#{curr_point} NO NEW PATHS FOUND FROM THIS POINT"
+      # probably because cant backtrack
       #hmap[:dead_ends] << curr_key
     end
    
