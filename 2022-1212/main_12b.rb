@@ -18,7 +18,7 @@ class Main
     return "#{point[:y]}-#{point[:x]}"
   end
 
-  def get_point(x, y, height, seen = false)
+  def get_point(x, y, height, seen = 0)
     return {
       y: y,
       x: x,
@@ -29,12 +29,12 @@ class Main
   
   def parse_map(lines)
     h_map = {
+      heads: [], 
       start: nil,
       end: nil,
       row_count: lines.length,
       col_count: 0,
       min_steps: nil,
-      elevations: [],
       grid: [],
     }
     y = 0
@@ -47,12 +47,18 @@ class Main
         h_map[:min_steps] = row.length * lines.length
       end
 
-      h_map[:elevations] << row
-      h_map[:grid] << row.map.with_index {|h, x| get_point(x, y, h) }
+      h_map[:grid] << row.map.with_index do |h, x| 
+        curr_point = get_point(x, y, h) 
+        if h == S_HEIGHT
+          h_map[:heads] << curr_point
+        end
+        curr_point
+      end
 
       if h_map[:start] == nil && start_x = row.index(S_MARK)
         h_map[:start] = get_point(start_x, y, S_HEIGHT)
         h_map[:grid][y][start_x][:height] = 'a'
+        h_map[:heads] << h_map[:start]
       end
 
       if h_map[:end] == nil && end_x = row.index(E_MARK)
@@ -62,6 +68,8 @@ class Main
 
       y += 1
     end
+
+    puts h_map[:heads]
 
     return h_map
   end
@@ -109,7 +117,8 @@ class Main
     return new_y
   end
 
-  def bfs(hmap, heads, depth)
+  def bfs(hmap, heads, depth, iter = 1)
+    #puts "hmap: [#{hmap.to_s}]"
 
     # if found the end then return depth
     #return bfs(hmap, new_heads.uniq, depth+1)
@@ -119,7 +128,7 @@ class Main
     heads.each do |curr_point|
       hx = curr_point[:x]
       hy = curr_point[:y]
-      hmap[:grid][hy][hx][:seen] = true
+      hmap[:grid][hy][hx][:seen] = iter
       # go through point to create new heads
       next_steps = [
         [hx - 1, hy],
@@ -133,7 +142,7 @@ class Main
         end
 
         next_point = hmap[:grid][y2][x2]
-        if next_point[:seen]
+        if next_point[:seen] == iter
           next
         end
 
@@ -150,21 +159,26 @@ class Main
     end
 
     if next_heads.uniq.length > 0 
-      bfs(hmap, next_heads.uniq, depth + 1)
+      bfs(hmap, next_heads.uniq, depth + 1, iter)
     end
   end
 
   def run
-    depth = bfs(@h_map, [@h_map[:start]], 0)
-    puts "depth: " + depth.to_s
+    hmap = @h_map.clone
+    #depths = []
+    puts "heads: #{hmap[:heads].to_s}"
+    iteration = 0
+    depths = hmap[:heads].map do |head| 
+      iteration += 1
+      depth = bfs(@h_map, [head], 0, iteration) 
+      hmap = @h_map.clone
+      depth
+    end
+    #depth = bfs(@h_map, [@h_map[:start]], 0)
+    #depths << depth
+    puts "depths: " + depths.to_s
 
-    #path_lengths = paths.map do |path|
-      #puts "P[#{path.length}] #{path.join(',')}" # debuggin
-      #path.length
-    #end
-
-    #return path_lengths.sort.first - 1
-    return depth
+    return depths.select {|x| x != nil}.sort.first
   end
 
 end
@@ -179,7 +193,7 @@ end
 
 aoc_day = 12
 files = {
-  'a' => 31, 
+  'a' => 29, 
   'b' => nil, # no expected result yet
 }
 files.keys.each do |file|
