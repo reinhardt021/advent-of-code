@@ -17,21 +17,11 @@ class Main
     y = 0
     while y < lines.length
       line = lines[y]
-      puts "line["+line+"]"
 
-      #digits = []
       row = line.split("")
-      #x = 0
-      #while x < row.length
-        #item = row[x]
-        #isNumeric = isNumber(item)
-        #puts "item["+item+"]=" + (isNumeric ? "T" : "F")
-        #x += 1
-      #end
 
       # get filter for digits array
       digits = row.select { |item| isNumber(item) }
-      puts "digits=", digits
 
       # get first item
       # get last item
@@ -56,15 +46,13 @@ class Main
   def run 
     sum = 0
     hash_keys = @data.keys
-    #puts "hash_keys=", hash_keys.to_s
 
     hash_keys.each do |curr_key|
       curr_row = @data[curr_key]
-      #puts curr_row
       first_num = curr_row[:first]
       last_num = curr_row[:last]
       combined_num = first_num + last_num
-      #puts first_num + last_num
+      #puts combined_num
     end
 
     sum
