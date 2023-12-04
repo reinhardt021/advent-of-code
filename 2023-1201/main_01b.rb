@@ -70,9 +70,9 @@ end
 
 aoc_day = '01'
 files = {
-  'a' => 142, 
-  'b' => 55017, # no expected result yet //=> 55017
-  #'c' => 281,
+  #'a' => 142, 
+  #'b' => 55017, # no expected result yet //=> 55017
+  'c' => 281,
 }
 files.keys.each do |file|
   expected_result = files[file]
