@@ -53,6 +53,7 @@ class Main
       last_num = curr_row[:last]
       combined_num = first_num + last_num
       #puts combined_num
+      sum += combined_num.to_i
     end
 
     sum
