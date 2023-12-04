@@ -37,24 +37,21 @@ class Main
       line = lines[y]
 
       DIGITS.keys.each do |digit_key|
-        parsed_line = line.gsub(digit_key.to_s, DIGITS[digit_key])
+        line = line.gsub(digit_key.to_s, DIGITS[digit_key].to_s)
       end
 
+      puts line
+      row = line.split("")
+      digits = row.select { |item| isNumber(item) }
 
-        # find last
-        # flip the string?
-        digit_posn = line.index(digit, -1 * digit.length)
-        if digit_posn != nil
-          puts "last=[" + digit_posn.to_s + "]=" + digit
-          if last_posn == nil || last_posn < digit_posn
-            last_posn = digit_posn
-            calibration_data[y.to_s.to_sym][:last] = digit
-          end
-        end
+      # get first item
+      # get last item
+      calibration_data[y.to_s.to_sym] = {
+        first: digits.first,
+        last: digits.last,
+      }
 
-      end
-
-      puts calibration_data[y.to_s.to_sym]
+      puts digits.first + digits.last
 
       y += 1
     end
@@ -66,6 +63,7 @@ class Main
     file = File.open(filename)
     lines = file.read.split("\n")
     @data = parse_map(lines)
+    puts @data
   end
 
 
