@@ -71,7 +71,7 @@ end
 aoc_day = '01'
 files = {
   'a' => 142, 
-  #'b' => nil, # no expected result yet
+  'b' => nil, # no expected result yet
 }
 files.keys.each do |file|
   expected_result = files[file]
