@@ -10,7 +10,7 @@ pad_number () {
     echo $digits # note: how to return string
 }
 
-YEAR="2022"
+YEAR="2023"
 for index in {1..25}
 do
     DAY=$(pad_number $index) #note: how to pass var and grab return value
