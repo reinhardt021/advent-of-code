@@ -36,10 +36,24 @@ class Main
     while y < lines.length
       line = lines[y]
 
-      # loop through spelled numbers
+      first_posn = nil
+      last_posn = nil
       @digits.each do |digit|
-        # check if digit has an index in 
-        line.index(digit)
+        # find first
+        digit_posn = line.index(digit)
+        if digit_posn == nil
+          next
+        end
+
+        if first_posn == nil
+          first_posn = digit_posn
+          next
+        end
+
+        if digit_posn < first_posn
+          first_posn = digit_posn
+        end
+
       end
       # and get positions?
       # nah just replace it in teh array
