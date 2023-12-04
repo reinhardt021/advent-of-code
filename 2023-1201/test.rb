@@ -5,8 +5,12 @@
 
 #puts "test=" + posn.to_s
 
-(0..9).each do |digit|
-  puts digit
-end
+#(0..9).each do |digit|
+  #puts digit
+#end
 
 
+my_str = "hellew"
+result = my_str.gsub("e", "u")
+puts "my_str=" + my_str
+puts "result=" + result

@@ -1,15 +1,15 @@
 class Main
-  @digits = [
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
-    "seven",
-    "eight",
-    "nine",
-  ]
+  DIGITS = {
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    six: 6,
+    seven: 7,
+    eight: 8,
+    nine: 9,
+  }
   
   def isNumber(item)
     item.to_i.to_s == item
@@ -36,6 +36,10 @@ class Main
     while y < lines.length
       line = lines[y]
 
+      DIGITS.keys.each do ||
+        line.gsub()
+      end
+
       calibration_data[y.to_s.to_sym] = {
         first: nil,
         last: nil,
@@ -43,10 +47,12 @@ class Main
 
       first_posn = nil
       last_posn = nil
-      @digits.each do |digit|
+
+      DIGITS.each do |digit|
         # find first
         digit_posn = line.index(digit)
         if digit_posn != nil
+          puts "first=[" + digit_posn.to_s + "]=" + digit
           if first_posn == nil || digit_posn < first_posn
             first_posn = digit_posn
             calibration_data[y.to_s.to_sym][:first] = digit
@@ -54,8 +60,10 @@ class Main
         end
 
         # find last
-        digit_posn = line.index(digit, -1)
+        # flip the string?
+        digit_posn = line.index(digit, -1 * digit.length)
         if digit_posn != nil
+          puts "last=[" + digit_posn.to_s + "]=" + digit
           if last_posn == nil || last_posn < digit_posn
             last_posn = digit_posn
             calibration_data[y.to_s.to_sym][:last] = digit
@@ -63,21 +71,8 @@ class Main
         end
 
       end
-      # and get positions?
-      # nah just replace it in teh array
-      #row = line.split("")
 
-      line
-
-      # get filter for digits array
-      digits = row.select { |item| isNumber(item) }
-
-      # get first item
-      # get last item
-      calibration_data[y.to_s.to_sym] = {
-        first: digits.first,
-        last: digits.last,
-      }
+      puts calibration_data[y.to_s.to_sym]
 
       y += 1
     end
@@ -119,8 +114,7 @@ end
 
 aoc_day = '01'
 files = {
-  #'a' => 142, 
-  'b' => nil, # no expected result yet
+  #'b' => nil, # no expected result yet
   'c' => 281,
 }
 files.keys.each do |file|
