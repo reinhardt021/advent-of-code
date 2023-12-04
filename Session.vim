@@ -26,7 +26,7 @@ badd +1 2022-1212/input_12a.txt
 badd +0 2022-1212/input_12b.txt
 badd +2 2022-1212/main_12b.rb
 badd +0 .gitignore
-badd +1 2023-1201/README_01.md
+badd +4 2023-1201/README_01.md
 badd +1 2023-1201/main_01a.rb
 badd +1 2023-1201/input_01a.txt
 badd +0 2023-1201/input_01b.txt
@@ -193,11 +193,11 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal nofen
-let s:l = 120 - ((15 * winheight(0) + 19) / 38)
+let s:l = 118 - ((13 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 120
+keepjumps 118
 normal! 0
 wincmd w
 argglobal
@@ -282,10 +282,6 @@ wincmd w
 wincmd _ | wincmd |
 split
 1wincmd k
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
 wincmd w
 let &splitbelow = s:save_splitbelow
 let &splitright = s:save_splitright
@@ -296,13 +292,11 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 50 + 75) / 150)
+exe 'vert 1resize ' . ((&columns * 74 + 75) / 150)
 exe '2resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 49 + 75) / 150)
-exe '3resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 49 + 75) / 150)
-exe '4resize ' . ((&lines * 18 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 99 + 75) / 150)
+exe 'vert 2resize ' . ((&columns * 75 + 75) / 150)
+exe '3resize ' . ((&lines * 18 + 20) / 41)
+exe 'vert 3resize ' . ((&columns * 75 + 75) / 150)
 argglobal
 balt 2022-1212/README_12.md
 setlocal fdm=indent
@@ -313,12 +307,12 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal nofen
-let s:l = 1 - ((0 * winheight(0) + 19) / 38)
+let s:l = 4 - ((3 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 4
+normal! 029|
 wincmd w
 argglobal
 if bufexists(fnamemodify("2023-1201/input_01a.txt", ":p")) | buffer 2023-1201/input_01a.txt | else | edit 2023-1201/input_01a.txt | endif
@@ -326,27 +320,6 @@ if &buftype ==# 'terminal'
   silent file 2023-1201/input_01a.txt
 endif
 balt 2023-1201/main_01a.rb
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal nofen
-let s:l = 1 - ((0 * winheight(0) + 9) / 19)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-wincmd w
-argglobal
-if bufexists(fnamemodify("2023-1201/input_01b.txt", ":p")) | buffer 2023-1201/input_01b.txt | else | edit 2023-1201/input_01b.txt | endif
-if &buftype ==# 'terminal'
-  silent file 2023-1201/input_01b.txt
-endif
-balt 2023-1201/input_01a.txt
 setlocal fdm=indent
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -383,14 +356,13 @@ normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 50 + 75) / 150)
+2wincmd w
+exe 'vert 1resize ' . ((&columns * 74 + 75) / 150)
 exe '2resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 49 + 75) / 150)
-exe '3resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 49 + 75) / 150)
-exe '4resize ' . ((&lines * 18 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 99 + 75) / 150)
-tabnext 1
+exe 'vert 2resize ' . ((&columns * 75 + 75) / 150)
+exe '3resize ' . ((&lines * 18 + 20) / 41)
+exe 'vert 3resize ' . ((&columns * 75 + 75) / 150)
+tabnext 3
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
