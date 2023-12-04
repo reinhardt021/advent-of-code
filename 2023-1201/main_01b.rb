@@ -1,4 +1,16 @@
 class Main
+  @digits = [
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+  ]
+  
   def isNumber(item)
     item.to_i.to_s == item
   end
@@ -13,12 +25,27 @@ class Main
       #2: { ... }
     }
 
+    line_digits = {
+      #9: "6",
+      #11: "3",
+      #13: "8",
+    }
+
 
     y = 0
     while y < lines.length
       line = lines[y]
 
-      row = line.split("")
+      # loop through spelled numbers
+      @digits.each do |digit|
+        # check if digit has an index in 
+        line.index(digit)
+      end
+      # and get positions?
+      # nah just replace it in teh array
+      #row = line.split("")
+
+      line
 
       # get filter for digits array
       digits = row.select { |item| isNumber(item) }
@@ -71,7 +98,7 @@ end
 aoc_day = '01'
 files = {
   #'a' => 142, 
-  #'b' => 55017, # no expected result yet //=> 55017
+  'b' => nil, # no expected result yet
   'c' => 281,
 }
 files.keys.each do |file|
