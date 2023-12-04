@@ -36,28 +36,10 @@ class Main
     while y < lines.length
       line = lines[y]
 
-      DIGITS.keys.each do ||
-        line.gsub()
+      DIGITS.keys.each do |digit_key|
+        parsed_line = line.gsub(digit_key.to_s, DIGITS[digit_key])
       end
 
-      calibration_data[y.to_s.to_sym] = {
-        first: nil,
-        last: nil,
-      }
-
-      first_posn = nil
-      last_posn = nil
-
-      DIGITS.each do |digit|
-        # find first
-        digit_posn = line.index(digit)
-        if digit_posn != nil
-          puts "first=[" + digit_posn.to_s + "]=" + digit
-          if first_posn == nil || digit_posn < first_posn
-            first_posn = digit_posn
-            calibration_data[y.to_s.to_sym][:first] = digit
-          end
-        end
 
         # find last
         # flip the string?
