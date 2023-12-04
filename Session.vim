@@ -14,7 +14,7 @@ else
   set shortmess=aoO
 endif
 badd +1 README.md
-badd +0 create-aoc-dirs.sh
+badd +1 create-aoc-dirs.sh
 badd +1 mk-files.sh
 badd +1 2022-1201/README.md
 badd +1 2022-1201/main.rb
@@ -23,13 +23,13 @@ badd +1 2022-1213/main_13a.rb
 badd +1 2022-1212/README_12.md
 badd +1 2022-1212/main_12a.rb
 badd +1 2022-1212/input_12a.txt
-badd +0 2022-1212/input_12b.txt
+badd +1 2022-1212/input_12b.txt
 badd +2 2022-1212/main_12b.rb
-badd +0 .gitignore
-badd +4 2023-1201/README_01.md
+badd +1 .gitignore
+badd +1 2023-1201/README_01.md
 badd +1 2023-1201/main_01a.rb
-badd +1 2023-1201/input_01a.txt
-badd +0 2023-1201/input_01b.txt
+badd +5 2023-1201/input_01a.txt
+badd +1 2023-1201/input_01b.txt
 argglobal
 %argdel
 tabnew +setlocal\ bufhidden=wipe
@@ -256,12 +256,12 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal nofen
-let s:l = 1 - ((0 * winheight(0) + 9) / 18)
+let s:l = 305 - ((8 * winheight(0) + 9) / 18)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 305
+normal! 08|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 50 + 75) / 150)
 exe '2resize ' . ((&lines * 19 + 20) / 41)
@@ -292,11 +292,11 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 74 + 75) / 150)
+exe 'vert 1resize ' . ((&columns * 75 + 75) / 150)
 exe '2resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 75 + 75) / 150)
+exe 'vert 2resize ' . ((&columns * 74 + 75) / 150)
 exe '3resize ' . ((&lines * 18 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 75 + 75) / 150)
+exe 'vert 3resize ' . ((&columns * 74 + 75) / 150)
 argglobal
 balt 2022-1212/README_12.md
 setlocal fdm=indent
@@ -307,19 +307,19 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal nofen
-let s:l = 4 - ((3 * winheight(0) + 19) / 38)
+let s:l = 54 - ((18 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 4
-normal! 029|
+keepjumps 54
+normal! 0
 wincmd w
 argglobal
-if bufexists(fnamemodify("2023-1201/input_01a.txt", ":p")) | buffer 2023-1201/input_01a.txt | else | edit 2023-1201/input_01a.txt | endif
+if bufexists(fnamemodify("2023-1201/input_01b.txt", ":p")) | buffer 2023-1201/input_01b.txt | else | edit 2023-1201/input_01b.txt | endif
 if &buftype ==# 'terminal'
-  silent file 2023-1201/input_01a.txt
+  silent file 2023-1201/input_01b.txt
 endif
-balt 2023-1201/main_01a.rb
+balt 2023-1201/input_01a.txt
 setlocal fdm=indent
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -328,12 +328,12 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal nofen
-let s:l = 1 - ((0 * winheight(0) + 9) / 19)
+let s:l = 1000 - ((18 * winheight(0) + 9) / 19)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 1000
+normal! 027|
 wincmd w
 argglobal
 if bufexists(fnamemodify("2023-1201/main_01a.rb", ":p")) | buffer 2023-1201/main_01a.rb | else | edit 2023-1201/main_01a.rb | endif
@@ -349,19 +349,19 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal nofen
-let s:l = 1 - ((0 * winheight(0) + 9) / 18)
+let s:l = 56 - ((9 * winheight(0) + 9) / 18)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 56
+normal! 030|
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 74 + 75) / 150)
+3wincmd w
+exe 'vert 1resize ' . ((&columns * 75 + 75) / 150)
 exe '2resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 75 + 75) / 150)
+exe 'vert 2resize ' . ((&columns * 74 + 75) / 150)
 exe '3resize ' . ((&lines * 18 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 75 + 75) / 150)
+exe 'vert 3resize ' . ((&columns * 74 + 75) / 150)
 tabnext 3
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
