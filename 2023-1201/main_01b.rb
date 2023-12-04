@@ -36,25 +36,31 @@ class Main
     while y < lines.length
       line = lines[y]
 
+      calibration_data[y.to_s.to_sym] = {
+        first: nil,
+        last: nil,
+      }
+
       first_posn = nil
       last_posn = nil
       @digits.each do |digit|
         # find first
         digit_posn = line.index(digit)
-        if digit_posn == nil
-          next
-        end
-
-        if first_posn == nil
-          first_posn = digit_posn
-          next
-        end
-
-        if digit_posn < first_posn
-          first_posn = digit_posn
+        if digit_posn != nil
+          if first_posn == nil || digit_posn < first_posn
+            first_posn = digit_posn
+            calibration_data[y.to_s.to_sym][:first] = digit
+          end
         end
 
         # find last
+        digit_posn = line.index(digit, -1)
+        if digit_posn != nil
+          if last_posn == nil || last_posn < digit_posn
+            last_posn = digit_posn
+            calibration_data[y.to_s.to_sym][:last] = digit
+          end
+        end
 
       end
       # and get positions?
