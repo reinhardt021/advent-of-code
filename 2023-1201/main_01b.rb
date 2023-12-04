@@ -54,6 +54,8 @@ class Main
           first_posn = digit_posn
         end
 
+        # find last
+
       end
       # and get positions?
       # nah just replace it in teh array
