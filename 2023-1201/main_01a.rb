@@ -54,6 +54,30 @@ class Main
 
 
   def run 
+    sum = 0
+    hash_keys = @data.keys
+    puts "hash_keys=", hash_keys.to_s
+
+    hash_keys.each do |curr_key|
+      #puts curr_key.to_s
+      curr_row = @data[curr_key]
+      puts curr_row
+      first_num = curr_row[:first]
+      last_num = curr_row[:last]
+      puts first_num + last_num
+    end
+
+    #y = 0
+    #while y < hash_keys.length 
+      #curr_key = hash_keys[y.to_s.to_sym]
+      #curr_row = @data[curr_key]
+      #first_num = curr_row[:first]
+      #last_num = curr_row[:last]
+      #puts first_num + last_num
+      #y += 1
+    #end
+
+    sum
   end
 end
 
